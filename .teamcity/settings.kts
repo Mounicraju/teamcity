@@ -1,20 +1,20 @@
 // Import necessary DSL components.
-// The version (v2023_11) should match your TeamCity server's major version.
-// Adjust if your TeamCity version is different (e.g., v2023_11).
-import jetbrains.buildServer.configs.kotlin.v2023_11.*
-import jetbrains.buildServer.configs.kotlin.v2023_11.Project
-import jetbrains.buildServer.configs.kotlin.v2023_11.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.v2023_11.buildSteps.npm
-import jetbrains.buildServer.configs.kotlin.v2023_11.triggers.vcs
-import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.commitStatusPublisher
-import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.dockerSupport
-import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.notifications
-import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.sshAgent
-import jetbrains.buildServer.configs.kotlin.v2023_11.buildSteps.dockerCommand
+// The version (v2022_10) should match your TeamCity server's major version.
+// Adjust if your TeamCity version is different (e.g., v2022_10).
+import jetbrains.buildServer.configs.kotlin.v2022_10.*
+import jetbrains.buildServer.configs.kotlin.v2022_10.Project
+import jetbrains.buildServer.configs.kotlin.v2022_10.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2022_10.buildSteps.npm
+import jetbrains.buildServer.configs.kotlin.v2022_10.triggers.vcs
+import jetbrains.buildServer.configs.kotlin.v2022_10.buildFeatures.commitStatusPublisher
+import jetbrains.buildServer.configs.kotlin.v2022_10.buildFeatures.dockerSupport
+import jetbrains.buildServer.configs.kotlin.v2022_10.buildFeatures.notifications
+import jetbrains.buildServer.configs.kotlin.v2022_10.buildFeatures.sshAgent
+import jetbrains.buildServer.configs.kotlin.v2022_10.buildSteps.dockerCommand
 
 // Define the TeamCity DSL version. This tells TeamCity which DSL version the script is written for.
-// It must match your TeamCity server's version (e.g., 2023.11 for TeamCity 2023.11.x).
-version = "2023.11"
+// It must match your TeamCity server's version (e.g., 2022.10 for TeamCity 2022.10.x).
+version = "2022.10"
 
 // Define the root project for your configuration within TeamCity.
 // This block describes the top-level project in the TeamCity UI that will contain your build configurations.
