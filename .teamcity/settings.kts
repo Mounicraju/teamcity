@@ -53,7 +53,7 @@ object MyProjectVcsRoot : GitVcsRoot({
     // URL of your Git repository.
     // IMPORTANT: Replace this with the actual URL of YOUR Git repository (e.g., on GitHub, GitLab, Bitbucket).
     // This should be the repository where you commit this .teamcity folder.
-    url = "https://github.com/your-username/your-repository-name.git" // <<<--- !!! IMPORTANT: UPDATE THIS WITH YOUR REPO URL !!!
+    url = "https://github.com/Mounicraju/teamcity.git"
 
     // Default branch to monitor for changes.
     branch = "refs/heads/main" // Or "refs/heads/master" if your default branch is master
