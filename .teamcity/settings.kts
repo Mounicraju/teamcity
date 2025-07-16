@@ -1,20 +1,20 @@
 // Import necessary DSL components.
-// The version (v2024_03) should match your TeamCity server's major version.
+// The version (v2023_11) should match your TeamCity server's major version.
 // Adjust if your TeamCity version is different (e.g., v2023_11).
-import jetbrains.buildServer.configs.kotlin.v2024_03.*
-import jetbrains.buildServer.configs.kotlin.v2024_03.Project
-import jetbrains.buildServer.configs.kotlin.v2024_03.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.v2024_03.buildSteps.npm
-import jetbrains.buildServer.configs.kotlin.v2024_03.triggers.vcs
-import jetbrains.buildServer.configs.kotlin.v2024_03.buildFeatures.commitStatusPublisher
-import jetbrains.buildServer.configs.kotlin.v2024_03.buildFeatures.dockerSupport
-import jetbrains.buildServer.configs.kotlin.v2024_03.buildFeatures.notifications
-import jetbrains.buildServer.configs.kotlin.v2024_03.buildFeatures.sshAgent
-import jetbrains.buildServer.configs.kotlin.v2024_03.buildSteps.dockerCommand
+import jetbrains.buildServer.configs.kotlin.v2023_11.*
+import jetbrains.buildServer.configs.kotlin.v2023_11.Project
+import jetbrains.buildServer.configs.kotlin.v2023_11.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2023_11.buildSteps.npm
+import jetbrains.buildServer.configs.kotlin.v2023_11.triggers.vcs
+import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.commitStatusPublisher
+import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.dockerSupport
+import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.notifications
+import jetbrains.buildServer.configs.kotlin.v2023_11.buildFeatures.sshAgent
+import jetbrains.buildServer.configs.kotlin.v2023_11.buildSteps.dockerCommand
 
 // Define the TeamCity DSL version. This tells TeamCity which DSL version the script is written for.
-// It must match your TeamCity server's version (e.g., 2024.03 for TeamCity 2024.03.x).
-version = "2024.03"
+// It must match your TeamCity server's version (e.g., 2023.11 for TeamCity 2023.11.x).
+version = "2023.11"
 
 // Define the root project for your configuration within TeamCity.
 // This block describes the top-level project in the TeamCity UI that will contain your build configurations.
