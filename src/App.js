@@ -1,13 +1,13 @@
-import logo from './logo.svg';
+import React from 'react';
 import './App.css';
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        <img src={process.env.PUBLIC_URL + '/logo.svg'} className="App-logo" alt="logo" />
         <p>
-          Hello World, Team city Demo
+          Configuration as Code Demo - Updated for TeamCity Build Steps!
         </p>
         <a
           className="App-link"
@@ -15,7 +15,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Jetbrains
+          Learn React
         </a>
       </header>
     </div>
