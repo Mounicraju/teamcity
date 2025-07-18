@@ -1,13 +1,13 @@
 // Import necessary DSL components.
-// The version (v2021_2) should match your TeamCity server's major version.
-import jetbrains.buildServer.configs.kotlin.v2021_2.*
-import jetbrains.buildServer.configs.kotlin.v2021_2.Project
-import jetbrains.buildServer.configs.kotlin.v2021_2.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.v2021_2.buildSteps.npm
-import jetbrains.buildServer.configs.kotlin.v2021_2.triggers.vcs
+// The version (v2020_2) should match your TeamCity server's major version.
+import jetbrains.buildServer.configs.kotlin.v2020_2.*
+import jetbrains.buildServer.configs.kotlin.v2020_2.Project
+import jetbrains.buildServer.configs.kotlin.v2020_2.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2020_2.buildSteps.npm
+import jetbrains.buildServer.configs.kotlin.v2020_2.triggers.vcs
 
 // Define the TeamCity DSL version.
-version = "2021.2"
+version = "2020.2"
 
 // Define the root project for your configuration within TeamCity.
 project {
