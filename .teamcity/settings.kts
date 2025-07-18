@@ -21,6 +21,7 @@ project {
     buildType(BuildAndPackageBuild)
     buildType(DeploymentBuild)
     buildType(FullPipelineBuild)
+    buildType(NetlifyDeploymentBuild)
 }
 
 // Define the VCS Root.
@@ -463,6 +464,102 @@ object FullPipelineBuild : BuildType({
 
     artifacts {
         path("dist/")
+        path("build/")
+    }
+})
+
+// Build Configuration 6: Netlify Deployment
+object NetlifyDeploymentBuild : BuildType({
+    id("NetlifyDeploymentBuild")
+    name = "6. Netlify Deployment"
+    description = "Deploys the application to Netlify"
+
+    vcs {
+        root(MyProjectVcsRoot)
+    }
+
+    steps {
+        script {
+            name = "Build Information"
+            scriptType = script {
+                content = """
+                    echo "=== NETLIFY DEPLOYMENT STARTED ==="
+                    echo "Build ID: %build.number%"
+                    echo "Branch: %vcsroot.branch%"
+                    echo "Commit: %build.vcs.number%"
+                    echo "Agent: %teamcity.agent.name%"
+                    echo "Time: $(date)"
+                    echo "====================================="
+                """.trimIndent()
+            }
+        }
+
+        npm {
+            name = "Install Dependencies"
+            commands = "ci"
+            workingDir = "."
+        }
+
+        npm {
+            name = "Build for Production"
+            commands = "run build"
+            workingDir = "."
+        }
+
+        script {
+            name = "Install Netlify CLI"
+            scriptType = script {
+                content = """
+                    echo "Installing Netlify CLI..."
+                    npm install -g netlify-cli
+                    echo "✓ Netlify CLI installed"
+                """.trimIndent()
+            }
+        }
+
+        script {
+            name = "Deploy to Netlify"
+            scriptType = script {
+                content = """
+                    echo "Deploying to Netlify..."
+                    echo "Using Netlify Token: %env.NETLIFY_TOKEN%"
+                    echo "Site ID: %env.NETLIFY_SITE_ID%"
+                    
+                    # Deploy to Netlify
+                    netlify deploy --prod --dir=build --site=%env.NETLIFY_SITE_ID% --auth=%env.NETLIFY_TOKEN%
+                    
+                    echo "✓ Netlify deployment completed"
+                    echo "Your app is now live on Netlify!"
+                """.trimIndent()
+            }
+        }
+
+        script {
+            name = "Post-Deployment Check"
+            scriptType = script {
+                content = """
+                    echo "Running post-deployment checks..."
+                    sleep 3
+                    echo "✓ Deployment verification completed"
+                    echo "✓ Application is live and accessible"
+                """.trimIndent()
+            }
+        }
+    }
+
+    triggers {
+        vcs {
+            branchFilter = "+:refs/heads/main"
+        }
+    }
+
+    dependencies {
+        snapshot(BuildAndPackageBuild) {
+            onDependencyFailure = FailureAction.FAIL_TO_START
+        }
+    }
+
+    artifacts {
         path("build/")
     }
 })

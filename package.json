@@ -27,7 +27,9 @@
     "format": "prettier --write \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{js,jsx,ts,tsx,json,css,md}\"",
     "ci": "npm ci",
-    "test:coverage": "npm test -- --coverage --watchAll=false"
+    "test:coverage": "npm test -- --coverage --watchAll=false",
+    "deploy:netlify": "npm run build && netlify deploy --prod --dir=build",
+    "deploy:preview": "npm run build && netlify deploy --dir=build"
   },
   "eslintConfig": {
     "extends": [
