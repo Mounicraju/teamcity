@@ -52,10 +52,58 @@ app.post('/api/users', (req, res) => {
   const newUser = {
     id: Math.floor(Math.random() * 1000) + 4,
     name,
-    email
+    email,
+    createdAt: new Date().toISOString()
   };
   
   res.status(201).json(newUser);
+});
+
+app.delete('/api/users/:id', (req, res) => {
+  const userId = parseInt(req.params.id);
+  
+  // Mock user deletion
+  res.status(200).json({ message: 'User deleted successfully' });
+});
+
+// Analytics API
+app.get('/api/analytics', (req, res) => {
+  const analytics = {
+    totalUsers: 3,
+    activeUsers: 3,
+    systemUptime: '99.9%',
+    lastUpdated: new Date().toISOString(),
+    features: {
+      userManagement: true,
+      taskManagement: true,
+      analytics: true,
+      settings: true
+    }
+  };
+  
+  res.json(analytics);
+});
+
+// System Status API
+app.get('/api/status', (req, res) => {
+  const status = {
+    status: 'online',
+    timestamp: new Date().toISOString(),
+    version: '2.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    features: [
+      'User Management',
+      'Task Management', 
+      'Analytics Dashboard',
+      'System Settings',
+      'Real-time Notifications',
+      'Material Design UI'
+    ]
+  };
+  
+  res.json(status);
 });
 
 // Main route (for backward compatibility)
