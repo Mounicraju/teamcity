@@ -1,8 +1,8 @@
 version = "2020.1"
 
 project {
-    id("TeamCityCaCDemo")
-    name = "TeamCity Configuration as Code Demo"
+    id("Teamcity")
+    name = "Teamcity"
     
     vcsRoot {
         id("GitRepository")
@@ -16,8 +16,8 @@ project {
     }
     
     buildType {
-        id("HelloWorldBuild")
-        name = "Hello World Build"
+        id("Build")
+        name = "Build"
         
         vcs {
             root(RelativeId("GitRepository"))
@@ -25,7 +25,7 @@ project {
         
         steps {
             script {
-                name = "Run Hello World"
+                name = "Build Demo 1"
                 scriptContent = "echo 'Hello, TeamCity!' && node hello-world.js"
             }
         }
