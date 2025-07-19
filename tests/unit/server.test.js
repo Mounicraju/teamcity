@@ -12,7 +12,7 @@ describe('Server Unit Tests', () => {
       expect(response.body).toHaveProperty('environment');
       expect(response.body).toHaveProperty('timestamp');
       expect(response.body).toHaveProperty('nodeVersion');
-      expect(response.body.message).toContain('GitHub Actions Configuration as Code Demo');
+      expect(response.body.message).toContain('Configuration as Code Demo');
     });
   });
 

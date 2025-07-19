@@ -11,14 +11,11 @@
     "test:integration": "jest --testPathPattern=integration --detectOpenHandles --forceExit",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
-    "build": "echo \"Building web application...\" && npm run lint && npm test",
+    "build": "npm run lint && npm test",
     "build:netlify": "npm run build && npm run build:static",
-    "build:static": "mkdir -p dist && cp -r public/* dist/ && echo 'Static build completed'",
-    "deploy:staging": "echo \"Deploying to staging environment...\" && echo \"✅ Staging deployment successful\"",
-    "deploy:production": "echo \"Deploying to production environment...\" && echo \"✅ Production deployment successful\"",
-    "deploy:netlify": "echo \"Deploying to Netlify...\" && echo \"✅ Netlify deployment successful\"",
-    "security:scan": "echo \"Running security scan...\" && npm audit --audit-level=moderate && echo \"✅ Security scan completed\"",
-    "performance:test": "echo \"Running performance tests...\" && echo \"✅ Performance tests completed\""
+    "build:static": "mkdir -p dist && cp -r public/* dist/",
+    "security:scan": "npm audit --audit-level=moderate",
+    "performance:test": "echo \"Performance tests completed\""
   },
   "keywords": ["github-actions", "cicd", "configuration-as-code", "demo", "webapp", "netlify"],
   "author": "Demo User",

@@ -143,6 +143,10 @@
             background: linear-gradient(45deg, #9C27B0, #7B1FA2);
         }
 
+        .feature-pipeline .card-icon {
+            background: linear-gradient(45deg, #00BCD4, #0097A7);
+        }
+
         /* Buttons */
         .btn {
             padding: 12px 24px;
@@ -374,10 +378,10 @@
         /* Loading */
         .loading {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #667eea;
+            width: 16px;
+            height: 16px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #667eea;
             border-radius: 50%;
             animation: spin 1s linear infinite;
         }
@@ -385,6 +389,149 @@
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
+        }
+
+        /* Pipeline Monitor */
+        .pipeline-status {
+            margin-top: 20px;
+        }
+
+        .pipeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+
+        .pipeline-title {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .pipeline-badge {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+            color: white;
+        }
+
+        .pipeline-badge.success {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .pipeline-badge.failure {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+        }
+
+        .pipeline-badge.running {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            animation: pulse 2s infinite;
+        }
+
+        .pipeline-steps {
+            margin-bottom: 20px;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 10px;
+            border-left: 4px solid #ccc;
+            transition: all 0.3s ease;
+        }
+
+        .pipeline-step:hover {
+            background: rgba(255, 255, 255, 0.9);
+            transform: translateX(5px);
+        }
+
+        .pipeline-step.success {
+            border-left-color: #4CAF50;
+        }
+
+        .pipeline-step.failure {
+            border-left-color: #f44336;
+        }
+
+        .pipeline-step.running {
+            border-left-color: #2196F3;
+            animation: pulse 2s infinite;
+        }
+
+        .pipeline-step.pending {
+            border-left-color: #FF9800;
+            opacity: 0.7;
+        }
+
+        .step-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            font-size: 20px;
+            color: white;
+        }
+
+        .step-icon.success {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+        }
+
+        .step-icon.failure {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+        }
+
+        .step-icon.running {
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+        }
+
+        .step-icon.pending {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+        }
+
+        .step-info {
+            flex: 1;
+        }
+
+        .step-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .step-status {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .step-duration {
+            font-size: 0.8rem;
+            color: #999;
+            margin-left: 10px;
+        }
+
+        .pipeline-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.7; }
+            100% { opacity: 1; }
         }
 
         /* Responsive */
@@ -399,6 +546,16 @@
             
             .container {
                 padding: 10px;
+            }
+
+            .pipeline-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .pipeline-actions {
+                justify-content: center;
             }
         }
     </style>
@@ -499,6 +656,41 @@
                 </div>
             </div>
 
+            <!-- CI/CD Pipeline Monitor -->
+            <div class="card feature-pipeline">
+                <div class="card-header">
+                    <div class="card-icon">
+                        <span class="material-icons">pipeline</span>
+                    </div>
+                    <div class="card-title">CI/CD Pipeline Monitor</div>
+                </div>
+                
+                <div class="pipeline-status">
+                    <div class="pipeline-header">
+                        <div class="pipeline-title">GitHub Actions Workflow</div>
+                        <div class="pipeline-badge" id="pipelineStatus">
+                            <span class="material-icons">sync</span>
+                            Monitoring...
+                        </div>
+                    </div>
+                    
+                    <div class="pipeline-steps" id="pipelineSteps">
+                        <!-- Pipeline steps will be loaded here -->
+                    </div>
+                    
+                    <div class="pipeline-actions">
+                        <button class="btn btn-primary" onclick="refreshPipeline()">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle; margin-right: 5px;">refresh</span>
+                            Refresh Status
+                        </button>
+                        <button class="btn btn-success" onclick="viewGitHubActions()">
+                            <span class="material-icons" style="font-size: 16px; vertical-align: middle; margin-right: 5px;">open_in_new</span>
+                            View on GitHub
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- System Settings -->
             <div class="card feature-settings">
                 <div class="card-header">
@@ -561,6 +753,7 @@
             darkMode: false,
             analytics: true
         };
+        let pipelineInterval;
 
         // Initialize the application
         document.addEventListener('DOMContentLoaded', function() {
@@ -568,6 +761,7 @@
             loadTasks();
             updateAnalytics();
             startSystemMonitoring();
+            loadPipelineStatus();
         });
 
         // User Management Functions
@@ -806,11 +1000,114 @@
             }, 3000);
         }
 
+        // Pipeline Monitoring Functions
+        function loadPipelineStatus() {
+            const pipelineSteps = [
+                { name: 'Code Quality & Linting', status: 'success', duration: '12s', icon: 'code' },
+                { name: 'Unit Tests', status: 'success', duration: '13s', icon: 'science' },
+                { name: 'Integration Tests', status: 'success', duration: '18s', icon: 'integration_instructions' },
+                { name: 'Security Scan', status: 'success', duration: '15s', icon: 'security' },
+                { name: 'Performance Tests', status: 'success', duration: '13s', icon: 'speed' },
+                { name: 'Build & Package', status: 'success', duration: '8s', icon: 'build' },
+                { name: 'Deploy to Netlify', status: 'running', duration: '25s', icon: 'cloud_upload' },
+                { name: 'Deploy to Staging', status: 'pending', duration: '', icon: 'rocket_launch' },
+                { name: 'Deploy to Production', status: 'pending', duration: '', icon: 'public' }
+            ];
+
+            displayPipelineSteps(pipelineSteps);
+            updatePipelineStatus('running');
+            
+            // Simulate real-time updates with better performance
+            const updates = [
+                { step: 6, status: 'success', duration: '25s', nextStep: 7, delay: 3000 },
+                { step: 7, status: 'success', duration: '12s', nextStep: 8, delay: 6000 },
+                { step: 8, status: 'success', duration: '15s', delay: 9000 }
+            ];
+
+            updates.forEach(update => {
+                setTimeout(() => {
+                    pipelineSteps[update.step].status = update.status;
+                    pipelineSteps[update.step].duration = update.duration;
+                    if (update.nextStep) {
+                        pipelineSteps[update.nextStep].status = 'running';
+                    }
+                    displayPipelineSteps(pipelineSteps);
+                    updatePipelineStatus(update.nextStep ? 'running' : 'success');
+                    
+                    if (!update.nextStep) {
+                        showNotification('🎉 Pipeline completed successfully! App deployed to Netlify!', 'success');
+                    }
+                }, update.delay);
+            });
+        }
+
+        function displayPipelineSteps(steps) {
+            const pipelineSteps = document.getElementById('pipelineSteps');
+            pipelineSteps.innerHTML = steps.map(step => `
+                <div class="pipeline-step ${step.status}">
+                    <div class="step-icon ${step.status}">
+                        <span class="material-icons">${step.icon}</span>
+                    </div>
+                    <div class="step-info">
+                        <div class="step-name">${step.name}</div>
+                        <div class="step-status">
+                            ${getStatusText(step.status)}
+                            ${step.duration ? `<span class="step-duration">• ${step.duration}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function getStatusText(status) {
+            switch(status) {
+                case 'success': return '✅ Completed successfully';
+                case 'failure': return '❌ Failed';
+                case 'running': return '🔄 Running...';
+                case 'pending': return '⏳ Waiting...';
+                default: return '⏳ Pending';
+            }
+        }
+
+        function updatePipelineStatus(status) {
+            const statusElement = document.getElementById('pipelineStatus');
+            const statusTexts = {
+                'success': 'Pipeline Successful',
+                'failure': 'Pipeline Failed',
+                'running': 'Pipeline Running'
+            };
+            
+            statusElement.className = `pipeline-badge ${status}`;
+            statusElement.innerHTML = `
+                <span class="material-icons">${status === 'success' ? 'check_circle' : status === 'failure' ? 'error' : 'sync'}</span>
+                ${statusTexts[status] || 'Monitoring...'}
+            `;
+        }
+
+        function refreshPipeline() {
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<span class="loading"></span> Refreshing...';
+            btn.disabled = true;
+
+            setTimeout(() => {
+                loadPipelineStatus();
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                showNotification('Pipeline status refreshed!', 'info');
+            }, 1500);
+        }
+
+        function viewGitHubActions() {
+            window.open('https://github.com/Mounicraju/teamcity/actions', '_blank');
+        }
+
         // Demo Features
         function demoFeatures() {
             // Simulate some demo interactions
             setTimeout(() => showNotification('Welcome to the Configuration as Code Demo!', 'info'), 1000);
             setTimeout(() => showNotification('Try adding a user or task to see the features!', 'info'), 3000);
+            setTimeout(() => showNotification('Watch the CI/CD pipeline progress in real-time!', 'info'), 5000);
         }
 
         // Start demo after page load

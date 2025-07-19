@@ -6,20 +6,40 @@ const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Performance optimizations
+app.set('etag', false); // Disable ETag for better performance
+app.set('x-powered-by', false); // Remove X-Powered-By header
+
 // Middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: false, // Allow inline styles for demo
+  crossOriginEmbedderPolicy: false
+}));
 app.use(cors());
 app.use(morgan('combined'));
-app.use(express.json());
+app.use(express.json({ limit: '1mb' })); // Limit JSON payload size
+
+// Cache static data for better performance
+const staticData = {
+  version: process.env.npm_package_version || '2.0.0',
+  environment: process.env.NODE_ENV || 'development',
+  nodeVersion: process.version,
+  features: [
+    'User Management',
+    'Task Management', 
+    'Analytics Dashboard',
+    'System Settings',
+    'CI/CD Pipeline Monitor',
+    'Material Design UI'
+  ]
+};
 
 // API Routes
 app.get('/api', (req, res) => {
   res.json({
-    message: 'Welcome to GitHub Actions Configuration as Code Demo!',
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
-    timestamp: new Date().toISOString(),
-    nodeVersion: process.version
+    message: 'Configuration as Code Demo API',
+    ...staticData,
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -48,7 +68,6 @@ app.post('/api/users', (req, res) => {
     return res.status(400).json({ error: 'Name and email are required' });
   }
   
-  // Mock user creation
   const newUser = {
     id: Math.floor(Math.random() * 1000) + 4,
     name,
@@ -60,16 +79,13 @@ app.post('/api/users', (req, res) => {
 });
 
 app.delete('/api/users/:id', (req, res) => {
+  // eslint-disable-next-line no-unused-vars
   const userId = parseInt(req.params.id);
-  
-  // Mock user deletion - in a real app, you would use userId to find and delete the user
-  console.log(`Deleting user with ID: ${userId}`);
   res.status(200).json({ message: 'User deleted successfully' });
 });
 
-// Analytics API
 app.get('/api/analytics', (req, res) => {
-  const analytics = {
+  res.json({
     totalUsers: 3,
     activeUsers: 3,
     systemUptime: '99.9%',
@@ -78,43 +94,28 @@ app.get('/api/analytics', (req, res) => {
       userManagement: true,
       taskManagement: true,
       analytics: true,
-      settings: true
+      settings: true,
+      pipelineMonitor: true
     }
-  };
-  
-  res.json(analytics);
+  });
 });
 
-// System Status API
 app.get('/api/status', (req, res) => {
-  const status = {
+  res.json({
     status: 'online',
     timestamp: new Date().toISOString(),
-    version: '2.0.0',
-    environment: process.env.NODE_ENV || 'development',
+    ...staticData,
     uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    features: [
-      'User Management',
-      'Task Management', 
-      'Analytics Dashboard',
-      'System Settings',
-      'Real-time Notifications',
-      'Material Design UI'
-    ]
-  };
-  
-  res.json(status);
+    memory: process.memoryUsage()
+  });
 });
 
-// Main route (for backward compatibility)
+// Main route - serve the web app
 app.get('/', (req, res) => {
   res.json({
-    message: 'Welcome to GitHub Actions Configuration as Code Demo!',
-    version: process.env.npm_package_version || '1.0.0',
-    environment: process.env.NODE_ENV || 'development',
-    timestamp: new Date().toISOString(),
-    nodeVersion: process.version
+    message: 'Configuration as Code Demo',
+    ...staticData,
+    timestamp: new Date().toISOString()
   });
 });
 
@@ -130,14 +131,16 @@ app.get('/health', (req, res) => {
 
 // Static file serving (only in non-test environments)
 if (process.env.NODE_ENV !== 'test') {
-  app.use(express.static('public'));
+  app.use(express.static('public', {
+    maxAge: '1h', // Cache static files for 1 hour
+    etag: false
+  }));
 }
 
 // Error handling middleware
 app.use((err, req, res, _next) => {
   console.error(err.stack);
   
-  // Handle JSON parsing errors
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({ error: 'Invalid JSON format' });
   }
