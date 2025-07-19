@@ -1,208 +1,110 @@
-# Configuration as Code Demo Project
+# TeamCity Configuration as Code Demo
 
-This project demonstrates the power and benefits of **Configuration as Code (CaC)** using TeamCity's Kotlin DSL. It showcases a complete CI/CD pipeline with multiple build steps, testing, and deployment scenarios.
+## Overview
 
-## 🎯 Demo Overview
+This is a simple "Hello World" project demonstrating TeamCity's Configuration as Code (CaC) capabilities using Kotlin DSL. The project showcases how CI/CD configurations can be stored, versioned, and managed as code.
 
-This demo is designed to showcase Configuration as Code capabilities to both technical and non-technical audiences, including:
-- **Product Managers**: Understanding the business benefits
-- **DevOps Engineers**: Technical implementation details
-- **Development Teams**: Practical usage examples
-
-## 🏗️ Project Structure
+## Project Structure
 
 ```
-teamcity/
+teamcity-cac-demo/
 ├── .teamcity/
-│   ├── settings.kts          # Main TeamCity configuration
-│   └── pom.xml              # Maven configuration for DSL
-├── src/                     # React application source
-├── public/                  # Static assets
-├── Dockerfile              # Container configuration
-├── docker-compose.yml      # Multi-service deployment
-├── nginx.conf             # Web server configuration
-├── .prettierrc            # Code formatting rules
-├── .eslintrc.js           # Code quality rules
-└── package.json           # Node.js dependencies
+│   └── settings.kts          # TeamCity Kotlin DSL configuration
+├── hello-world.js            # Simple Hello World application
+├── package.json              # Node.js project configuration
+└── README.md                 # This file
 ```
 
-## 🚀 Build Configurations
+## Build Configurations
 
-The demo includes **5 different build configurations** that showcase various CI/CD capabilities:
+The TeamCity project includes 4 build configurations:
 
-### 1. Code Quality & Linting
-- **Purpose**: Ensures code quality and consistency
-- **Steps**: 
-  - Install dependencies
-  - Run ESLint for code quality
-  - Security audit with npm audit
-  - Code formatting checks with Prettier
-- **Benefits**: Catches issues early, maintains code standards
+1. **Hello World Build** - Simple build that runs the Hello World application
+2. **Test Suite** - Runs tests for the application
+3. **Code Quality Check** - Performs linting and code quality checks
+4. **Full Pipeline** - Complete CI/CD pipeline: Quality → Test → Build → Deploy
 
-### 2. Testing Suite
-- **Purpose**: Validates application functionality
-- **Steps**:
-  - Unit tests execution
-  - Test coverage analysis
-  - Performance testing simulation
-- **Benefits**: Ensures reliability, prevents regressions
+## Key Features Demonstrated
 
-### 3. Build & Package
-- **Purpose**: Creates deployable artifacts
-- **Steps**:
-  - Application build
-  - Deployment package creation
-  - Docker image preparation
-- **Benefits**: Consistent, reproducible builds
+- **VCS Root Configuration** - Git repository integration
+- **Multiple Build Steps** - Script execution, npm commands
+- **Build Dependencies** - Sequential execution of builds
+- **VCS Triggers** - Automatic builds on code changes
+- **Build Features** - Custom build report tabs
 
-### 4. Deployment
-- **Purpose**: Deploys to different environments
-- **Steps**:
-  - Environment validation
-  - Staging deployment
-  - Health checks
-  - Conditional production deployment
-- **Benefits**: Automated, safe deployments
+## Getting Started
 
-### 5. Full Pipeline
-- **Purpose**: Complete end-to-end CI/CD pipeline
-- **Steps**: Combines all previous steps in sequence
-- **Benefits**: Single command deployment, full automation
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/teamcity-cac-demo.git
+   cd teamcity-cac-demo
+   ```
 
-## 🎭 Demo Scenarios
+2. **Run locally**
+   ```bash
+   npm start
+   ```
 
-### Scenario 1: Code Quality Demonstration
-1. **Show the configuration file** (`.teamcity/settings.kts`)
-2. **Explain the benefits**:
-   - Version controlled configuration
-   - Consistent quality checks
-   - Automated enforcement
-3. **Run the build** and show real-time feedback
+3. **Test the application**
+   ```bash
+   npm test
+   ```
 
-### Scenario 2: Testing Automation
-1. **Demonstrate test execution**
-2. **Show coverage reports**
-3. **Explain failure handling**
-4. **Highlight time savings**
+4. **Check code quality**
+   ```bash
+   npm run lint
+   ```
 
-### Scenario 3: Deployment Pipeline
-1. **Show multi-environment deployment**
-2. **Demonstrate conditional logic**
-3. **Explain safety measures**
-4. **Show rollback capabilities**
+## TeamCity Setup
 
-### Scenario 4: Configuration Changes
-1. **Make a configuration change** in the code
-2. **Commit and push** to trigger builds
-3. **Show automatic deployment**
-4. **Demonstrate consistency**
+1. **Create a new project in TeamCity**
+2. **Enable Versioned Settings** (Project Settings → Versioned Settings)
+3. **Set VCS Root** to point to this repository
+4. **Configure environment variables**:
+   - `GITHUB_TOKEN` - Your GitHub personal access token
+5. **Load project settings from VCS**
 
-## 💡 Key Benefits Demonstrated
+## Configuration as Code Benefits
 
-### For Non-Technical Audience
-- **Consistency**: Same process every time
-- **Speed**: Faster deployments
-- **Reliability**: Fewer human errors
-- **Transparency**: Everything is visible in code
-- **Compliance**: Audit trail of all changes
+### For Product Managers
+- **Consistency**: All environments use identical configurations
+- **Reliability**: Reduced human error in configuration
+- **Transparency**: Clear audit trail of all changes
+- **Compliance**: Version control meets regulatory requirements
+- **Speed**: Faster deployment and configuration updates
 
-### For Technical Audience
-- **Version Control**: Configuration changes are tracked
-- **Code Review**: Configuration changes go through review process
-- **Testing**: Configuration can be tested before deployment
-- **Reusability**: Templates and shared configurations
-- **Scalability**: Easy to replicate across projects
+### For DevOps Engineers
+- **Version Control**: Track configuration changes over time
+- **Code Review**: Peer review of configuration changes
+- **Testability**: Test configurations before applying
+- **Reusability**: Share configurations across projects
+- **Scalability**: Manage multiple environments efficiently
 
-## ⚠️ Potential Downsides
+## Demo Flow
 
-### Complexity
-- **Learning Curve**: TeamCity DSL requires Kotlin knowledge
-- **Debugging**: Configuration errors can be harder to debug
-- **Tooling**: Limited IDE support for DSL
+1. **Initial Setup** - Show TeamCity UI and current configuration
+2. **Generate DSL** - Demonstrate generating Kotlin DSL from UI
+3. **Modify Configuration** - Make changes directly in code
+4. **Commit & Push** - Version control the changes
+5. **Auto-Apply** - Show TeamCity picking up changes automatically
+6. **Version History** - Demonstrate configuration versioning
 
-### Maintenance
-- **Version Compatibility**: DSL version must match TeamCity version
-- **Documentation**: Less documentation compared to UI configuration
-- **Expertise**: Requires specialized knowledge
+## Environment Variables
 
-## 🛠️ Setup Instructions
+| Variable | Description | Required |
+|----------|-------------|----------|
+| `GITHUB_TOKEN` | GitHub personal access token | Yes |
 
-### Prerequisites
-- TeamCity server (Cloud or On-Premise)
-- Git repository
-- Node.js and npm
-- Docker (optional, for containerization demo)
+## Troubleshooting
 
-### Configuration Steps
-1. **Update VCS Root**: Modify the repository URL in `settings.kts`
-2. **Enable Versioned Settings**: In TeamCity project settings
-3. **Point to Repository**: Configure the VCS root to point to this repository
-4. **Set Parameters**: Configure any required parameters (GitHub tokens, etc.)
+- **DSL Compilation Errors**: Check TeamCity version compatibility
+- **VCS Connection Issues**: Verify GitHub token and repository access
+- **Build Failures**: Check Node.js installation on build agents
 
-### Running the Demo
-1. **Commit and Push**: Push the configuration to your repository
-2. **Trigger Builds**: Make changes to trigger automatic builds
-3. **Monitor Progress**: Watch the builds execute in TeamCity
-4. **Explain Each Step**: Use the build logs to explain what's happening
+## Next Steps
 
-## 📊 Demo Metrics
-
-Track these metrics during your demo:
-- **Build Time**: How long each step takes
-- **Success Rate**: Percentage of successful builds
-- **Deployment Frequency**: How often deployments occur
-- **Error Reduction**: Fewer configuration-related issues
-
-## 🎪 Presentation Tips
-
-### Opening (2 minutes)
-- "Imagine you're a team lead managing 10 developers..."
-- "Every time someone deploys, they have to remember 15 steps..."
-- "What if we could automate all of this?"
-
-### Technical Deep Dive (5 minutes)
-- Show the configuration file
-- Explain the structure
-- Demonstrate a configuration change
-- Show the automated response
-
-### Business Impact (3 minutes)
-- Time savings calculations
-- Error reduction statistics
-- Compliance benefits
-- Cost savings
-
-### Q&A Preparation
-- Common questions about complexity
-- Migration strategies
-- Team adoption challenges
-- ROI calculations
-
-## 🔧 Customization
-
-### Adding New Build Steps
-1. Create a new `BuildType` object in `settings.kts`
-2. Define the steps, triggers, and dependencies
-3. Add it to the project configuration
-4. Commit and push to trigger
-
-### Environment-Specific Configurations
-- Use TeamCity parameters for environment variables
-- Create separate build configurations for different environments
-- Use conditional logic based on branch names
-
-### Integration Examples
-- GitHub status publishing
-- Slack notifications
-- JIRA integration
-- Artifact publishing
-
-## 📚 Additional Resources
-
-- [TeamCity Kotlin DSL Documentation](https://www.jetbrains.com/help/teamcity/kotlin-dsl.html)
-- [Configuration as Code Best Practices](https://www.jetbrains.com/help/teamcity/kotlin-dsl.html#Best+Practices)
-- [TeamCity Versioned Settings](https://www.jetbrains.com/help/teamcity/storing-project-settings-in-version-control.html)
-
----
-
-**Remember**: This demo is designed to be interactive. Encourage questions and be prepared to show real-time changes and their effects!
+- Add more complex build steps
+- Implement artifact publishing
+- Add deployment configurations
+- Set up build chains and dependencies
+- Configure build parameters and environment variables

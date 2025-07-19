@@ -1,50 +1,43 @@
-version = "2025.03.3"
+version = "2023.11"
 
 project {
-    id("TeamCityDemo")
-    name = "TeamCity Demo Project"
+    id("TeamCityCaCDemo")
+    name = "TeamCity Configuration as Code Demo"
+    description = "A simple Hello World project demonstrating TeamCity Kotlin DSL capabilities"
     
+    // VCS Root - Git repository
     vcsRoot {
-        id("GitHubRepo")
-        name = "GitHub Repository"
-        url = "https://github.com/Mounicraju/teamcity-demo.git"
+        id("GitRepository")
+        name = "Git Repository"
+        vcsName = "jetbrains.git"
+        url = "https://github.com/your-username/teamcity-cac-demo.git"
         branch = "refs/heads/main"
+        branchSpec = "+:refs/heads/*"
         authMethod = password {
-            userName = "Mounicraju"
-            password = "%github.token%"
+            userName = "your-username"
+            password = "%env.GITHUB_TOKEN%"
         }
     }
     
+    // Build Configuration 1: Hello World Build
     buildType {
-        id("CodeQuality")
-        name = "1. Code Quality & Linting"
+        id("HelloWorldBuild")
+        name = "Hello World Build"
+        description = "Simple build that runs the Hello World application"
         
         vcs {
-            root(jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot.absoluteId("GitHubRepo"))
+            root(RelativeId("GitRepository"))
         }
         
         steps {
             script {
-                name = "Build Information"
+                name = "Run Hello World"
                 scriptContent = """
-                    echo "=== CODE QUALITY BUILD STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "====================================="
-                """
-            }
-            
-            npm {
-                name = "Install Dependencies"
-                commands = "ci"
-            }
-            
-            npm {
-                name = "Run Linting"
-                commands = "run lint"
+                    echo "Starting Hello World build..."
+                    node hello-world.js
+                    echo "Build completed successfully!"
+                """.trimIndent()
+                scriptExecMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
             }
         }
         
@@ -53,157 +46,129 @@ project {
                 branchFilter = "+:*"
             }
         }
+        
+        features {
+            buildReportTab {
+                id = "buildInfo"
+                title = "Build Information"
+                startPage = "buildInfo.html"
+            }
+        }
     }
     
+    // Build Configuration 2: Test Suite
     buildType {
-        id("Testing")
-        name = "2. Testing Suite"
+        id("TestSuite")
+        name = "Test Suite"
+        description = "Run tests for the Hello World application"
         
         vcs {
-            root(jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot.absoluteId("GitHubRepo"))
+            root(RelativeId("GitRepository"))
         }
         
         steps {
             script {
-                name = "Build Information"
-                scriptContent = """
-                    echo "=== TESTING BUILD STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "====================================="
-                """
-            }
-            
-            npm {
-                name = "Install Dependencies"
-                commands = "ci"
-            }
-            
-            npm {
                 name = "Run Tests"
-                commands = "run test"
+                scriptContent = """
+                    echo "Running test suite..."
+                    npm test
+                    echo "Tests completed!"
+                """.trimIndent()
             }
         }
         
         triggers {
             vcs {
                 branchFilter = "+:*"
-            }
-        }
-    }
-    
-    buildType {
-        id("BuildPackage")
-        name = "3. Build & Package"
-        
-        vcs {
-            root(jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot.absoluteId("GitHubRepo"))
-        }
-        
-        steps {
-            script {
-                name = "Build Information"
-                scriptContent = """
-                    echo "=== BUILD & PACKAGE STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "====================================="
-                """
-            }
-            
-            npm {
-                name = "Install Dependencies"
-                commands = "ci"
-            }
-            
-            npm {
-                name = "Build Application"
-                commands = "run build"
-            }
-            
-            script {
-                name = "Package Artifacts"
-                scriptContent = """
-                    echo "Creating build artifacts..."
-                    mkdir -p artifacts
-                    cp -r build/* artifacts/
-                    echo "Build artifacts created successfully!"
-                """
-            }
-        }
-        
-        artifacts {
-            path = "artifacts/**"
-        }
-        
-        triggers {
-            vcs {
-                branchFilter = "+:*"
-            }
-        }
-    }
-    
-    buildType {
-        id("NetlifyDeploy")
-        name = "4. Netlify Deployment"
-        
-        vcs {
-            root(jetbrains.buildServer.configs.kotlin.vcs.GitVcsRoot.absoluteId("GitHubRepo"))
-        }
-        
-        steps {
-            script {
-                name = "Build Information"
-                scriptContent = """
-                    echo "=== NETLIFY DEPLOYMENT STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "====================================="
-                """
-            }
-            
-            npm {
-                name = "Install Dependencies"
-                commands = "ci"
-            }
-            
-            npm {
-                name = "Build Application"
-                commands = "run build"
-            }
-            
-            script {
-                name = "Deploy to Netlify"
-                scriptContent = """
-                    echo "Installing Netlify CLI..."
-                    npm install -g netlify-cli
-                    
-                    echo "Deploying to Netlify..."
-                    netlify deploy --prod --dir=build --token=%env.NETLIFY_TOKEN% --site=%env.NETLIFY_SITE_ID%
-                    
-                    echo "Deployment completed successfully!"
-                """
             }
         }
         
         dependencies {
-            snapshot(jetbrains.buildServer.configs.kotlin.BuildType.absoluteId("BuildPackage")) {
+            snapshot(RelativeId("HelloWorldBuild")) {
                 onDependencyFailure = FailureAction.FAIL_TO_START
+            }
+        }
+    }
+    
+    // Build Configuration 3: Code Quality
+    buildType {
+        id("CodeQuality")
+        name = "Code Quality Check"
+        description = "Run linting and code quality checks"
+        
+        vcs {
+            root(RelativeId("GitRepository"))
+        }
+        
+        steps {
+            script {
+                name = "Run Linting"
+                scriptContent = """
+                    echo "Running code quality checks..."
+                    npm run lint
+                    echo "Code quality check completed!"
+                """.trimIndent()
             }
         }
         
         triggers {
             vcs {
-                branchFilter = "+:main"
+                branchFilter = "+:*"
+            }
+        }
+    }
+    
+    // Build Configuration 4: Full Pipeline
+    buildType {
+        id("FullPipeline")
+        name = "Full Pipeline"
+        description = "Complete CI/CD pipeline: Quality → Test → Build"
+        
+        vcs {
+            root(RelativeId("GitRepository"))
+        }
+        
+        steps {
+            script {
+                name = "Pipeline Step 1: Code Quality"
+                scriptContent = """
+                    echo "=== STEP 1: Code Quality Check ==="
+                    npm run lint
+                    echo "Code quality check passed!"
+                """.trimIndent()
+            }
+            
+            script {
+                name = "Pipeline Step 2: Run Tests"
+                scriptContent = """
+                    echo "=== STEP 2: Running Tests ==="
+                    npm test
+                    echo "Tests passed!"
+                """.trimIndent()
+            }
+            
+            script {
+                name = "Pipeline Step 3: Build Application"
+                scriptContent = """
+                    echo "=== STEP 3: Building Application ==="
+                    npm run build
+                    echo "Build completed successfully!"
+                """.trimIndent()
+            }
+            
+            script {
+                name = "Pipeline Step 4: Deploy (Simulated)"
+                scriptContent = """
+                    echo "=== STEP 4: Deployment (Simulated) ==="
+                    echo "Application would be deployed here in a real scenario"
+                    echo "Deployment completed successfully!"
+                """.trimIndent()
+            }
+        }
+        
+        triggers {
+            vcs {
+                branchFilter = "+:*"
             }
         }
     }
