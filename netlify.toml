@@ -14,6 +14,12 @@
   
   # Environment variables
   NODE_ENV = "production"
+  SITE_NAME = "demoforteamcity"
+
+# Site configuration
+[context.production.environment]
+  SITE_NAME = "demoforteamcity"
+  SITE_ID = "492d1086-0844-46ed-9b2c-b61b7d1cf513"
 
 # Redirects for SPA and API
 [[redirects]]
