@@ -1,19 +1,12 @@
-// Import necessary DSL components.
-// The version (v2020_2) should match your TeamCity server's major version.
-import jetbrains.buildServer.configs.kotlin.v2020_2.*
-import jetbrains.buildServer.configs.kotlin.v2020_2.Project
-import jetbrains.buildServer.configs.kotlin.v2020_2.buildSteps.script
-import jetbrains.buildServer.configs.kotlin.v2020_2.buildSteps.npm
-import jetbrains.buildServer.configs.kotlin.v2020_2.triggers.vcs
+// Basic TeamCity Configuration
+// Using minimal DSL syntax for maximum compatibility
 
-// Define the TeamCity DSL version.
-version = "2020.2"
+version = "2020.1"
 
-// Define the root project for your configuration within TeamCity.
 project {
-    id("Configuration_As_Code_Demo")
+    id = "Configuration_As_Code_Demo"
     name = "Configuration as Code Demo Project"
-    description = "Comprehensive demo showcasing Configuration as Code capabilities with multiple build steps, testing, and deployment scenarios."
+    description = "Comprehensive demo showcasing Configuration as Code capabilities"
 
     vcsRoot(MyProjectVcsRoot)
     buildType(CodeQualityBuild)
@@ -22,17 +15,15 @@ project {
     buildType(NetlifyDeploymentBuild)
 }
 
-// Define the VCS Root.
 object MyProjectVcsRoot : GitVcsRoot({
-    id("MyProjectGitRepo")
+    id = "MyProjectGitRepo"
     name = "My Project Git Repository"
     url = "https://github.com/Mounicraju/teamcity.git"
     branch = "refs/heads/main"
 })
 
-// Build Configuration 1: Code Quality Checks
 object CodeQualityBuild : BuildType({
-    id("CodeQualityBuild")
+    id = "CodeQualityBuild"
     name = "1. Code Quality & Linting"
     description = "Runs code quality checks, linting, and static analysis"
 
@@ -43,17 +34,15 @@ object CodeQualityBuild : BuildType({
     steps {
         script {
             name = "Build Information"
-            scriptType = script {
-                content = """
-                    echo "=== CODE QUALITY BUILD STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "====================================="
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "=== CODE QUALITY BUILD STARTED ==="
+                echo "Build ID: %build.number%"
+                echo "Branch: %vcsroot.branch%"
+                echo "Commit: %build.vcs.number%"
+                echo "Agent: %teamcity.agent.name%"
+                echo "Time: $(date)"
+                echo "====================================="
+            """
         }
 
         npm {
@@ -70,13 +59,11 @@ object CodeQualityBuild : BuildType({
 
         script {
             name = "Security Audit"
-            scriptType = script {
-                content = """
-                    echo "Running security audit..."
-                    npm audit --audit-level=moderate || echo "Security vulnerabilities found - check logs"
-                    echo "Security audit completed"
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "Running security audit..."
+                npm audit --audit-level=moderate || echo "Security vulnerabilities found - check logs"
+                echo "Security audit completed"
+            """
         }
     }
 
@@ -87,9 +74,8 @@ object CodeQualityBuild : BuildType({
     }
 })
 
-// Build Configuration 2: Testing
 object TestingBuild : BuildType({
-    id("TestingBuild")
+    id = "TestingBuild"
     name = "2. Testing Suite"
     description = "Runs unit tests, integration tests, and test coverage"
 
@@ -100,17 +86,15 @@ object TestingBuild : BuildType({
     steps {
         script {
             name = "Build Information"
-            scriptType = script {
-                content = """
-                    echo "=== TESTING BUILD STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "==============================="
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "=== TESTING BUILD STARTED ==="
+                echo "Build ID: %build.number%"
+                echo "Branch: %vcsroot.branch%"
+                echo "Commit: %build.vcs.number%"
+                echo "Agent: %teamcity.agent.name%"
+                echo "Time: $(date)"
+                echo "==============================="
+            """
         }
 
         npm {
@@ -127,14 +111,12 @@ object TestingBuild : BuildType({
 
         script {
             name = "Performance Check"
-            scriptType = script {
-                content = """
-                    echo "Running performance checks..."
-                    sleep 5
-                    echo "Performance check completed"
-                    echo "All tests passed successfully!"
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "Running performance checks..."
+                sleep 5
+                echo "Performance check completed"
+                echo "All tests passed successfully!"
+            """
         }
     }
 
@@ -145,9 +127,8 @@ object TestingBuild : BuildType({
     }
 })
 
-// Build Configuration 3: Build and Package
 object BuildAndPackageBuild : BuildType({
-    id("BuildAndPackageBuild")
+    id = "BuildAndPackageBuild"
     name = "3. Build & Package"
     description = "Builds the application and creates deployment packages"
 
@@ -158,17 +139,15 @@ object BuildAndPackageBuild : BuildType({
     steps {
         script {
             name = "Build Information"
-            scriptType = script {
-                content = """
-                    echo "=== BUILD & PACKAGE STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "================================="
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "=== BUILD & PACKAGE STARTED ==="
+                echo "Build ID: %build.number%"
+                echo "Branch: %vcsroot.branch%"
+                echo "Commit: %build.vcs.number%"
+                echo "Agent: %teamcity.agent.name%"
+                echo "Time: $(date)"
+                echo "================================="
+            """
         }
 
         npm {
@@ -185,23 +164,21 @@ object BuildAndPackageBuild : BuildType({
 
         script {
             name = "Create Deployment Package"
-            scriptType = script {
-                content = """
-                    echo "Creating deployment package..."
-                    mkdir -p dist/package
-                    cp -r build/* dist/package/
-                    cp package.json dist/package/
-                    cp README.md dist/package/
-                    
-                    echo "Build: %build.number%" > dist/package/version.txt
-                    echo "Commit: %build.vcs.number%" >> dist/package/version.txt
-                    echo "Date: $(date)" >> dist/package/version.txt
-                    
-                    cd dist
-                    zip -r package-%build.number%.zip package/
-                    echo "Deployment package created: package-%build.number%.zip"
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "Creating deployment package..."
+                mkdir -p dist/package
+                cp -r build/* dist/package/
+                cp package.json dist/package/
+                cp README.md dist/package/
+                
+                echo "Build: %build.number%" > dist/package/version.txt
+                echo "Commit: %build.vcs.number%" >> dist/package/version.txt
+                echo "Date: $(date)" >> dist/package/version.txt
+                
+                cd dist
+                zip -r package-%build.number%.zip package/
+                echo "Deployment package created: package-%build.number%.zip"
+            """
         }
     }
 
@@ -217,9 +194,8 @@ object BuildAndPackageBuild : BuildType({
     }
 })
 
-// Build Configuration 4: Netlify Deployment
 object NetlifyDeploymentBuild : BuildType({
-    id("NetlifyDeploymentBuild")
+    id = "NetlifyDeploymentBuild"
     name = "4. Netlify Deployment"
     description = "Deploys the application to Netlify"
 
@@ -230,17 +206,15 @@ object NetlifyDeploymentBuild : BuildType({
     steps {
         script {
             name = "Build Information"
-            scriptType = script {
-                content = """
-                    echo "=== NETLIFY DEPLOYMENT STARTED ==="
-                    echo "Build ID: %build.number%"
-                    echo "Branch: %vcsroot.branch%"
-                    echo "Commit: %build.vcs.number%"
-                    echo "Agent: %teamcity.agent.name%"
-                    echo "Time: $(date)"
-                    echo "====================================="
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "=== NETLIFY DEPLOYMENT STARTED ==="
+                echo "Build ID: %build.number%"
+                echo "Branch: %vcsroot.branch%"
+                echo "Commit: %build.vcs.number%"
+                echo "Agent: %teamcity.agent.name%"
+                echo "Time: $(date)"
+                echo "====================================="
+            """
         }
 
         npm {
@@ -257,42 +231,36 @@ object NetlifyDeploymentBuild : BuildType({
 
         script {
             name = "Install Netlify CLI"
-            scriptType = script {
-                content = """
-                    echo "Installing Netlify CLI..."
-                    npm install -g netlify-cli
-                    echo "✓ Netlify CLI installed"
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "Installing Netlify CLI..."
+                npm install -g netlify-cli
+                echo "✓ Netlify CLI installed"
+            """
         }
 
         script {
             name = "Deploy to Netlify"
-            scriptType = script {
-                content = """
-                    echo "Deploying to Netlify..."
-                    echo "Using Netlify Token: %env.NETLIFY_TOKEN%"
-                    echo "Site ID: %env.NETLIFY_SITE_ID%"
-                    
-                    # Deploy to Netlify
-                    netlify deploy --prod --dir=build --site=%env.NETLIFY_SITE_ID% --auth=%env.NETLIFY_TOKEN%
-                    
-                    echo "✓ Netlify deployment completed"
-                    echo "Your app is now live on Netlify!"
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "Deploying to Netlify..."
+                echo "Using Netlify Token: %env.NETLIFY_TOKEN%"
+                echo "Site ID: %env.NETLIFY_SITE_ID%"
+                
+                # Deploy to Netlify
+                netlify deploy --prod --dir=build --site=%env.NETLIFY_SITE_ID% --auth=%env.NETLIFY_TOKEN%
+                
+                echo "✓ Netlify deployment completed"
+                echo "Your app is now live on Netlify!"
+            """
         }
 
         script {
             name = "Post-Deployment Check"
-            scriptType = script {
-                content = """
-                    echo "Running post-deployment checks..."
-                    sleep 3
-                    echo "✓ Deployment verification completed"
-                    echo "✓ Application is live and accessible"
-                """.trimIndent()
-            }
+            scriptContent = """
+                echo "Running post-deployment checks..."
+                sleep 3
+                echo "✓ Deployment verification completed"
+                echo "✓ Application is live and accessible"
+            """
         }
     }
 
