@@ -1,25 +1,22 @@
-version = "2023.11"
+version = "2020.1"
 
 project {
     id("TeamCityCaCDemo")
     name = "TeamCity Configuration as Code Demo"
     description = "A simple Hello World project demonstrating TeamCity Kotlin DSL capabilities"
     
-    // VCS Root - Git repository
     vcsRoot {
         id("GitRepository")
         name = "Git Repository"
-        vcsName = "jetbrains.git"
-        url = "https://github.com/your-username/teamcity-cac-demo.git"
+        url = "https://github.com/Mounicraju/teamcity.git"
         branch = "refs/heads/main"
         branchSpec = "+:refs/heads/*"
         authMethod = password {
-            userName = "your-username"
+            userName = "Mounicraju"
             password = "%env.GITHUB_TOKEN%"
         }
     }
     
-    // Build Configuration 1: Hello World Build
     buildType {
         id("HelloWorldBuild")
         name = "Hello World Build"
@@ -37,7 +34,6 @@ project {
                     node hello-world.js
                     echo "Build completed successfully!"
                 """.trimIndent()
-                scriptExecMode = BuildStep.ExecutionMode.RUN_ON_FAILURE
             }
         }
         
@@ -46,17 +42,8 @@ project {
                 branchFilter = "+:*"
             }
         }
-        
-        features {
-            buildReportTab {
-                id = "buildInfo"
-                title = "Build Information"
-                startPage = "buildInfo.html"
-            }
-        }
     }
     
-    // Build Configuration 2: Test Suite
     buildType {
         id("TestSuite")
         name = "Test Suite"
@@ -90,7 +77,6 @@ project {
         }
     }
     
-    // Build Configuration 3: Code Quality
     buildType {
         id("CodeQuality")
         name = "Code Quality Check"
@@ -118,7 +104,6 @@ project {
         }
     }
     
-    // Build Configuration 4: Full Pipeline
     buildType {
         id("FullPipeline")
         name = "Full Pipeline"

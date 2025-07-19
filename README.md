@@ -36,8 +36,8 @@ The TeamCity project includes 4 build configurations:
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/teamcity-cac-demo.git
-   cd teamcity-cac-demo
+   git clone https://github.com/Mounicraju/teamcity.git
+   cd teamcity
    ```
 
 2. **Run locally**
@@ -61,7 +61,7 @@ The TeamCity project includes 4 build configurations:
 2. **Enable Versioned Settings** (Project Settings → Versioned Settings)
 3. **Set VCS Root** to point to this repository
 4. **Configure environment variables**:
-   - `GITHUB_TOKEN` - Your GitHub personal access token
+   - `GITHUB_TOKEN` - Your GitHub personal access token (provided separately)
 5. **Load project settings from VCS**
 
 ## Configuration as Code Benefits
