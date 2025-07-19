@@ -1,8 +1,8 @@
 version = "2020.1"
 
 project {
-    id("Teamcity")
-    name = "Teamcity"
+    id("HelloWorldProject")
+    name = "Hello World Project"
     
     vcsRoot {
         id("GitRepository")
@@ -25,8 +25,8 @@ project {
         
         steps {
             script {
-                name = "Build Demo 1"
-                scriptContent = "echo 'Hello, TeamCity!' && node hello-world.js"
+                name = "Hello World"
+                scriptContent = "node hello-world.js"
             }
         }
     }
@@ -49,7 +49,7 @@ project {
     
     buildType {
         id("CodeQuality")
-        name = "Code Quality Check"
+        name = "Code Quality"
         
         vcs {
             root(RelativeId("GitRepository"))
@@ -57,7 +57,7 @@ project {
         
         steps {
             script {
-                name = "Run Linting"
+                name = "Lint Code"
                 scriptContent = "npm run lint"
             }
         }
@@ -73,23 +73,20 @@ project {
         
         steps {
             script {
-                name = "Pipeline Step 1: Code Quality"
-                scriptContent = "echo 'Step 1: Code Quality' && npm run lint"
+                name = "Build"
+                scriptContent = "node hello-world.js"
             }
-            
             script {
-                name = "Pipeline Step 2: Run Tests"
-                scriptContent = "echo 'Step 2: Tests' && npm test"
+                name = "Test"
+                scriptContent = "npm test"
             }
-            
             script {
-                name = "Pipeline Step 3: Build"
-                scriptContent = "echo 'Step 3: Build' && npm run build"
+                name = "Lint"
+                scriptContent = "npm run lint"
             }
-            
             script {
-                name = "Pipeline Step 4: Deploy"
-                scriptContent = "echo 'Step 4: Deploy (simulated)'"
+                name = "Build App"
+                scriptContent = "npm run build"
             }
         }
     }
