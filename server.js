@@ -62,7 +62,8 @@ app.post('/api/users', (req, res) => {
 app.delete('/api/users/:id', (req, res) => {
   const userId = parseInt(req.params.id);
   
-  // Mock user deletion
+  // Mock user deletion - in a real app, you would use userId to find and delete the user
+  console.log(`Deleting user with ID: ${userId}`);
   res.status(200).json({ message: 'User deleted successfully' });
 });
 
