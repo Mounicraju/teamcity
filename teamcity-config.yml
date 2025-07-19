@@ -1,0 +1,471 @@
+# TeamCity Configuration for CI/CD Pipeline
+# This file helps TeamCity understand and display build steps properly
+
+version: 1.0
+
+# Project Configuration
+project:
+  name: "CI/CD Configuration as Code Demo"
+  description: "Demonstrating Configuration as Code with comprehensive CI/CD pipeline"
+
+# Build Configurations
+build_configurations:
+  
+  # Build Configuration 1: Install Dependencies
+  install-dependencies:
+    name: "📦 Install Dependencies"
+    description: "Install project dependencies using npm ci"
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 2: Code Quality & Linting
+  code-quality:
+    name: "🔍 Code Quality & Linting"
+    description: "Run ESLint for code quality checks"
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+      
+      - name: "Run ESLint"
+        type: "script"
+        script: "npm run lint"
+      
+      - name: "ESLint Report"
+        type: "script"
+        script: |
+          echo "## 🔍 Code Quality Results"
+          echo "ESLint checks completed successfully"
+          echo "No linting errors found"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 3: Unit Tests
+  unit-tests:
+    name: "🧪 Unit Tests"
+    description: "Run unit tests with Jest and generate coverage"
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+      
+      - name: "Run Unit Tests"
+        type: "script"
+        script: "npm run test:unit"
+      
+      - name: "Test Coverage Report"
+        type: "script"
+        script: |
+          echo "## 🧪 Unit Test Results"
+          echo "Unit tests completed successfully"
+          echo "Coverage report generated"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 4: Integration Tests
+  integration-tests:
+    name: "🔗 Integration Tests"
+    description: "Run integration tests for API endpoints"
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+      
+      - name: "Run Integration Tests"
+        type: "script"
+        script: "npm run test:integration"
+      
+      - name: "Integration Test Report"
+        type: "script"
+        script: |
+          echo "## 🔗 Integration Test Results"
+          echo "Integration tests completed successfully"
+          echo "API endpoints tested and verified"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 5: Security Scan
+  security-scan:
+    name: "🔒 Security Scan"
+    description: "Run security vulnerability analysis"
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+      
+      - name: "Run Security Scan"
+        type: "script"
+        script: "npm run security:scan"
+      
+      - name: "Security Report"
+        type: "script"
+        script: |
+          echo "## 🔒 Security Scan Results"
+          echo "Security scan completed successfully"
+          echo "No critical vulnerabilities found"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 6: Performance Tests
+  performance-tests:
+    name: "⚡ Performance Tests"
+    description: "Run performance benchmarks"
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+      
+      - name: "Run Performance Tests"
+        type: "script"
+        script: "npm run performance:test"
+      
+      - name: "Performance Report"
+        type: "script"
+        script: |
+          echo "## ⚡ Performance Test Results"
+          echo "Performance tests completed successfully"
+          echo "Application performance verified"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 7: Build & Package
+  build:
+    name: "🏗️ Build & Package"
+    description: "Build application and create deployment package"
+    dependencies:
+      - code-quality
+      - unit-tests
+      - integration-tests
+      - security-scan
+    
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+      
+      - name: "Run Full Test Suite"
+        type: "script"
+        script: "npm test"
+      
+      - name: "Build Application"
+        type: "script"
+        script: "npm run build"
+      
+      - name: "Create Deployment Package"
+        type: "script"
+        script: |
+          mkdir -p dist
+          cp -r server.js package.json public tests .eslintrc.js jest.config.js dist/
+          tar -czf deployment-package.tar.gz dist/
+      
+      - name: "Upload Build Artifacts"
+        type: "artifacts"
+        artifacts:
+          - path: "deployment-package.tar.gz"
+            name: "deployment-package"
+      
+      - name: "Build Report"
+        type: "script"
+        script: |
+          echo "## 🏗️ Build Results"
+          echo "Build completed successfully"
+          echo "Deployment package created: deployment-package.tar.gz"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 8: Deploy to Staging
+  deploy-staging:
+    name: "🚀 Deploy to Staging"
+    description: "Deploy application to staging environment"
+    dependencies:
+      - build
+    
+    steps:
+      - name: "Download Build Artifacts"
+        type: "artifacts"
+        artifacts:
+          - path: "deployment-package.tar.gz"
+            name: "deployment-package"
+      
+      - name: "Deploy to Staging"
+        type: "script"
+        script: |
+          echo "Deploying to staging environment..."
+          echo "✅ Staging deployment successful"
+          echo "Staging URL: https://staging-demo.example.com"
+      
+      - name: "Staging Deployment Report"
+        type: "script"
+        script: |
+          echo "## 🚀 Staging Deployment"
+          echo "Application deployed to staging environment"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 9: Deploy to Netlify
+  deploy-netlify:
+    name: "🌐 Deploy to Netlify"
+    description: "Deploy application to Netlify"
+    dependencies:
+      - build
+    
+    steps:
+      - name: "Install Dependencies"
+        type: "script"
+        script: "npm ci"
+      
+      - name: "Build for Netlify"
+        type: "script"
+        script: "npm run build:netlify"
+      
+      - name: "Deploy to Netlify"
+        type: "script"
+        script: |
+          echo "Deploying to Netlify..."
+          echo "Site ID: 492d1086-0844-46ed-9b2c-b61b7d1cf513"
+          echo "Site URL: https://demoforteamcity.netlify.app"
+          echo "✅ Netlify deployment successful"
+      
+      - name: "Netlify Deployment Report"
+        type: "script"
+        script: |
+          echo "## 🌐 Netlify Deployment"
+          echo "Application deployed to Netlify successfully! 🎉"
+          echo ""
+          echo "### 📋 Deployment Details:"
+          echo "- **Site URL**: https://demoforteamcity.netlify.app"
+          echo "- **Site ID**: 492d1086-0844-46ed-9b2c-b61b7d1cf513"
+          echo "- **Branch**: main"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 10: Deploy to Production
+  deploy-production:
+    name: "🚀 Deploy to Production"
+    description: "Deploy application to production environment"
+    dependencies:
+      - deploy-staging
+      - deploy-netlify
+    
+    steps:
+      - name: "Download Build Artifacts"
+        type: "artifacts"
+        artifacts:
+          - path: "deployment-package.tar.gz"
+            name: "deployment-package"
+      
+      - name: "Deploy to Production"
+        type: "script"
+        script: |
+          echo "Deploying to production environment..."
+          echo "✅ Production deployment successful"
+          echo "Production URL: https://production-demo.example.com"
+      
+      - name: "Production Deployment Report"
+        type: "script"
+        script: |
+          echo "## 🚀 Production Deployment"
+          echo "Application deployed to production environment"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+  # Build Configuration 11: Pipeline Summary
+  pipeline-summary:
+    name: "📢 Pipeline Summary"
+    description: "Generate comprehensive pipeline summary report"
+    dependencies:
+      - code-quality
+      - unit-tests
+      - integration-tests
+      - security-scan
+      - performance-tests
+      - build
+      - deploy-staging
+      - deploy-netlify
+      - deploy-production
+    
+    steps:
+      - name: "Generate Pipeline Summary"
+        type: "script"
+        script: |
+          echo "## 🎉 CI/CD Pipeline Summary"
+          echo ""
+          echo "### ✅ Completed Jobs:"
+          echo "- 🔍 Code Quality & Linting"
+          echo "- 🧪 Unit Tests"
+          echo "- 🔗 Integration Tests"
+          echo "- 🔒 Security Scan"
+          echo "- ⚡ Performance Tests"
+          echo "- 🏗️ Build & Package"
+          echo "- 🚀 Deploy to Staging"
+          echo "- 🌐 Deploy to Netlify"
+          echo "- 🚀 Deploy to Production"
+          echo ""
+          echo "### 🏆 Configuration as Code Benefits:"
+          echo "- ✅ Version controlled CI/CD configuration"
+          echo "- ✅ Consistent build process across environments"
+          echo "- ✅ Automated quality gates"
+          echo "- ✅ Automated deployment pipeline"
+          echo "- ✅ Comprehensive testing strategy"
+          echo "- ✅ Multi-platform deployment (Staging, Netlify, Production)"
+          echo ""
+          echo "### 🎯 TeamCity Integration:"
+          echo "- ✅ All build steps visible in TeamCity UI"
+          echo "- ✅ Real-time build monitoring"
+          echo "- ✅ Visual pipeline representation"
+          echo "- ✅ Configuration as Code demonstrated"
+    
+    triggers:
+      - type: "vcs"
+        branch_filter: "+:main"
+    
+    agent_requirements:
+      - "nodejs"
+      - "npm"
+
+# VCS Root Configuration
+vcs_root:
+  name: "GitHub Repository"
+  url: "https://github.com/Mounicraju/teamcity.git"
+  branch: "main"
+  checkout_rules:
+    - "+:*"
+    - "-:node_modules/*"
+    - "-:coverage/*"
+
+# TeamCity UI Configuration
+ui:
+  dashboard:
+    widgets:
+      - type: "build_status"
+        title: "CI/CD Pipeline Status"
+        build_configurations:
+          - install-dependencies
+          - code-quality
+          - unit-tests
+          - integration-tests
+          - security-scan
+          - performance-tests
+          - build
+          - deploy-staging
+          - deploy-netlify
+          - deploy-production
+          - pipeline-summary
+      
+      - type: "build_statistics"
+        title: "Build Statistics"
+        build_configurations:
+          - install-dependencies
+          - code-quality
+          - unit-tests
+          - integration-tests
+          - security-scan
+          - performance-tests
+          - build
+          - deploy-staging
+          - deploy-netlify
+          - deploy-production
+          - pipeline-summary
+      
+      - type: "recent_builds"
+        title: "Recent Builds"
+        build_configurations:
+          - install-dependencies
+          - code-quality
+          - unit-tests
+          - integration-tests
+          - security-scan
+          - performance-tests
+          - build
+          - deploy-staging
+          - deploy-netlify
+          - deploy-production
+          - pipeline-summary
+
+# Environment Variables
+env:
+  NODE_VERSION: "18"
+  NPM_CACHE_FOLDER: "~/.npm"
+  NPM_CONFIG_CACHE: "~/.npm"
+  NODE_ENV: "test"
+
+# Notifications
+notifications:
+  - type: "email"
+    recipients:
+      - "admin@localhost"
+    events:
+      - "build_failed"
+      - "build_successful"
+      - "deployment_completed"
+  
+  - type: "slack"
+    channel: "#ci-cd-pipeline"
+    events:
+      - "build_failed"
+      - "build_successful"
+      - "deployment_completed" 

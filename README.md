@@ -1,21 +1,18 @@
 # 🚀 Configuration as Code Demo
 
-A comprehensive demonstration of **Configuration as Code (CaC)** capabilities using GitHub Actions for CI/CD pipelines.
-This project showcases how to store and version control your CI/CD configuration alongside your application code, demonstrating both **benefits** and **implementation approaches** for configuration-as-code.
-
+A comprehensive demonstration of **Configuration as Code (CaC)** capabilities using GitHub Actions and TeamCity for CI/CD pipelines.
 
 ## 📁 Project Structure
 
 ```
 ├── .github/workflows/          # GitHub Actions configurations
-│   ├── ci-cd-pipeline.yml      # Main CI/CD pipeline (9 jobs)
-│   ├── security-scan.yml       # Security analysis workflow
-│   └── reusable-workflows.yml  # Reusable workflow components
+│   └── ci-cd-pipeline.yml      # Main CI/CD pipeline (10 jobs)
 ├── public/                     # Web application frontend
 ├── tests/                      # Unit and integration tests
 ├── netlify/                    # Netlify deployment configuration
 ├── server.js                   # Express.js web server
-└── package.json                # Dependencies and scripts
+├── package.json                # Dependencies and scripts
+└── teamcity-config.yml         # TeamCity configuration
 ```
 
 ## ✅ Configuration as Code Benefits
@@ -35,37 +32,19 @@ This project showcases how to store and version control your CI/CD configuration
 - Faster team onboarding
 - Centralized configuration management
 
-### 🔍 **Transparency & Collaboration**
-- Visible pipeline configuration
-- Team collaboration on improvements
-- Living documentation
-
-## ⚠️ Configuration as Code Downsides
-
-### 📚 **Learning Curve**
-- YAML complexity and tool knowledge required
-- Initial setup time investment
-
-### 🔧 **Maintenance Overhead**
-- Version management complexity
-- Testing pipeline changes
-
-### 🚫 **Flexibility Limitations**
-- Template constraints
-- Tool lock-in considerations
-
 ## 🏗️ CI/CD Pipeline Features
 
-### **9 Comprehensive Build Jobs:**
-1. **🔍 Code Quality & Linting** - ESLint analysis
-2. **🧪 Unit Tests** - Jest testing with coverage
-3. **🔗 Integration Tests** - End-to-end testing
-4. **🔒 Security Scan** - Vulnerability analysis
-5. **⚡ Performance Tests** - Application benchmarking
-6. **🏗️ Build & Package** - Application compilation
-7. **🚀 Deploy to Staging** - Automated staging deployment
-8. **🌐 Deploy to Netlify** - Cloud deployment
-9. **📢 Pipeline Summary** - Comprehensive reporting
+### **10 Comprehensive Build Jobs:**
+1. **📦 Install Dependencies** - npm ci installation
+2. **🔍 Code Quality & Linting** - ESLint analysis
+3. **🧪 Unit Tests** - Jest testing with coverage
+4. **🔗 Integration Tests** - End-to-end testing
+5. **🔒 Security Scan** - Vulnerability analysis
+6. **⚡ Performance Tests** - Application benchmarking
+7. **🏗️ Build & Package** - Application compilation
+8. **🚀 Deploy to Staging** - Automated staging deployment
+9. **🌐 Deploy to Netlify** - Cloud deployment
+10. **📢 Pipeline Summary** - Comprehensive reporting
 
 ### **Multi-Platform Deployment:**
 - **Staging Environment** - For testing
@@ -116,6 +95,22 @@ npm start
 2. **Sequential Jobs**: Build → Deploy staging → Deploy Netlify → Deploy production
 3. **Quality Gates**: Each job must pass before proceeding
 
+## 🏢 TeamCity Integration
+
+### **Visual Pipeline Representation:**
+TeamCity provides a beautiful visual dashboard showing:
+- **Real-time build status** for each step
+- **Dependency relationships** with arrows
+- **Live progress indicators**
+- **Professional UI** for demo presentations
+
+### **Build Configurations:**
+All 10 build steps are visible in TeamCity UI with:
+- **Clear step names** and descriptions
+- **Execution logs** and outputs
+- **Status tracking** (success/failed/running)
+- **Artifact management**
+
 ## 🌐 Netlify Deployment
 
 ### **Automatic Deployment:**
@@ -129,8 +124,6 @@ npm start
 - `netlify/functions/api.js` - Serverless API
 - Environment variables for production settings
 
-
-
 ## 📊 Success Metrics
 
 - **✅ All Tests Passing**: 13/13 tests
@@ -138,3 +131,10 @@ npm start
 - **✅ Security**: Vulnerability scanning
 - **✅ Performance**: Benchmarking included
 - **✅ Deployment**: Multi-platform automation
+- **✅ TeamCity Integration**: Visual pipeline monitoring
+
+## 🔗 Live URLs
+
+- **Netlify Site**: https://demoforteamcity.netlify.app
+- **GitHub Actions**: https://github.com/Mounicraju/teamcity/actions
+- **TeamCity Dashboard**: http://localhost:8111
