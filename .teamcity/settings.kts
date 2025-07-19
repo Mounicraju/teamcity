@@ -1,8 +1,12 @@
-version = "2020.1"
+import jetbrains.buildServer.configs.kotlin.v2024_03.*
+import jetbrains.buildServer.configs.kotlin.v2024_03.buildSteps.script
+import jetbrains.buildServer.configs.kotlin.v2024_03.triggers.vcs
+
+version = "2024.03"
 
 project {
-    id("HelloWorldProject")
-    name = "Hello World Project"
+    id("Teamcity")
+    name = "Teamcity"
     
     vcsRoot {
         id("GitRepository")
@@ -20,7 +24,7 @@ project {
         name = "Build"
         
         vcs {
-            root(RelativeId("GitRepository"))
+            root(DslContext.settingsRoot)
         }
         
         steps {
@@ -36,7 +40,7 @@ project {
         name = "Test Suite"
         
         vcs {
-            root(RelativeId("GitRepository"))
+            root(DslContext.settingsRoot)
         }
         
         steps {
@@ -52,7 +56,7 @@ project {
         name = "Code Quality"
         
         vcs {
-            root(RelativeId("GitRepository"))
+            root(DslContext.settingsRoot)
         }
         
         steps {
@@ -68,7 +72,7 @@ project {
         name = "Full Pipeline"
         
         vcs {
-            root(RelativeId("GitRepository"))
+            root(DslContext.settingsRoot)
         }
         
         steps {
