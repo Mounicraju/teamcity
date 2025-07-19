@@ -13,11 +13,11 @@ module.exports = {
   },
   rules: {
     'indent': ['error', 2],
-    'linebreak-style': ['error', 'unix'],
+    'linebreak-style': 'off', // Disable linebreak style for Windows compatibility
     'quotes': ['error', 'single'],
     'semi': ['error', 'always'],
     'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
-    'no-console': 'warn',
+    'no-console': 'off', // Allow console statements for demo purposes
     'prefer-const': 'error',
     'no-var': 'error'
   }

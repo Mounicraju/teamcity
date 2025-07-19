@@ -12,6 +12,7 @@ env:
   NODE_VERSION: '18'
   NPM_CACHE_FOLDER: ~/.npm
   NPM_CONFIG_CACHE: ~/.npm
+  NODE_ENV: 'test'
 
 # Jobs that run in parallel for efficiency
 jobs:
@@ -98,12 +99,6 @@ jobs:
     - name: 📋 Install dependencies
       run: npm ci
       
-    - name: 🚀 Start application
-      run: |
-        npm start &
-        sleep 10
-        echo "Application started on port 3000"
-        
     - name: 🔗 Run integration tests
       run: npm run test:integration
       
@@ -162,11 +157,6 @@ jobs:
     - name: 📋 Install dependencies
       run: npm ci
       
-    - name: 🚀 Start application
-      run: |
-        npm start &
-        sleep 10
-        
     - name: ⚡ Run performance tests
       run: npm run performance:test
       

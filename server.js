@@ -11,10 +11,9 @@ app.use(helmet());
 app.use(cors());
 app.use(morgan('combined'));
 app.use(express.json());
-app.use(express.static('public'));
 
-// Routes
-app.get('/', (req, res) => {
+// API Routes
+app.get('/api', (req, res) => {
   res.json({
     message: 'Welcome to GitHub Actions Configuration as Code Demo!',
     version: process.env.npm_package_version || '1.0.0',
@@ -24,7 +23,7 @@ app.get('/', (req, res) => {
   });
 });
 
-app.get('/health', (req, res) => {
+app.get('/api/health', (req, res) => {
   res.json({
     status: 'healthy',
     uptime: process.uptime(),
@@ -59,9 +58,41 @@ app.post('/api/users', (req, res) => {
   res.status(201).json(newUser);
 });
 
+// Main route (for backward compatibility)
+app.get('/', (req, res) => {
+  res.json({
+    message: 'Welcome to GitHub Actions Configuration as Code Demo!',
+    version: process.env.npm_package_version || '1.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString(),
+    nodeVersion: process.version
+  });
+});
+
+// Health endpoint (for backward compatibility)
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    uptime: process.uptime(),
+    memory: process.memoryUsage(),
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Static file serving (only in non-test environments)
+if (process.env.NODE_ENV !== 'test') {
+  app.use(express.static('public'));
+}
+
 // Error handling middleware
-app.use((err, req, res, next) => {
+app.use((err, req, res, _next) => {
   console.error(err.stack);
+  
+  // Handle JSON parsing errors
+  if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
+    return res.status(400).json({ error: 'Invalid JSON format' });
+  }
+  
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
@@ -70,10 +101,21 @@ app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📊 Health check available at http://localhost:${PORT}/health`);
-  console.log(`👥 API available at http://localhost:${PORT}/api/users`);
-});
+// Only start the server if this file is run directly
+if (require.main === module) {
+  const server = app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+    console.log(`📊 Health check available at http://localhost:${PORT}/health`);
+    console.log(`👥 API available at http://localhost:${PORT}/api/users`);
+  });
+
+  // Handle graceful shutdown
+  process.on('SIGTERM', () => {
+    console.log('SIGTERM received, shutting down gracefully');
+    server.close(() => {
+      console.log('Process terminated');
+    });
+  });
+}
 
 module.exports = app; 

@@ -11,5 +11,15 @@ module.exports = {
     '/tests/'
   ],
   verbose: true,
-  testTimeout: 10000
+  testTimeout: 10000,
+  setupFilesAfterEnv: [],
+  testEnvironmentOptions: {
+    NODE_ENV: 'test'
+  },
+  // Prevent Jest from running tests in parallel to avoid port conflicts
+  maxWorkers: 1,
+  // Force exit after tests complete
+  forceExit: true,
+  // Detect open handles
+  detectOpenHandles: true
 }; 
