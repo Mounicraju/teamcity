@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Actions Configuration as Code Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .status-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .status-item h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .users-section {
+            margin-top: 30px;
+        }
+        
+        .user-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 15px;
+            margin-bottom: 20px;
+            align-items: end;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #555;
+        }
+        
+        .form-group input {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        
+        .btn:hover {
+            background: #5a6fd8;
+        }
+        
+        .users-list {
+            display: grid;
+            gap: 10px;
+        }
+        
+        .user-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #e9ecef;
+        }
+        
+        .user-item strong {
+            color: #667eea;
+        }
+        
+        .loading {
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        .error {
+            color: #dc3545;
+            background: #f8d7da;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+        
+        .success {
+            color: #155724;
+            background: #d4edda;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 GitHub Actions Configuration as Code Demo</h1>
+            <p>A simple web application showcasing CI/CD configuration as code capabilities</p>
+        </div>
+        
+        <div class="card">
+            <h2>📊 Application Status</h2>
+            <div class="status-grid" id="statusGrid">
+                <div class="status-item">
+                    <h3>Server Status</h3>
+                    <p id="serverStatus">Loading...</p>
+                </div>
+                <div class="status-item">
+                    <h3>Version</h3>
+                    <p id="appVersion">Loading...</p>
+                </div>
+                <div class="status-item">
+                    <h3>Environment</h3>
+                    <p id="environment">Loading...</p>
+                </div>
+                <div class="status-item">
+                    <h3>Uptime</h3>
+                    <p id="uptime">Loading...</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card users-section">
+            <h2>👥 User Management</h2>
+            
+            <form class="user-form" id="userForm">
+                <div class="form-group">
+                    <label for="userName">Name:</label>
+                    <input type="text" id="userName" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="userEmail">Email:</label>
+                    <input type="email" id="userEmail" name="email" required>
+                </div>
+                <button type="submit" class="btn">Add User</button>
+            </form>
+            
+            <div id="message"></div>
+            
+            <h3>Current Users:</h3>
+            <div class="users-list" id="usersList">
+                <div class="loading">Loading users...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Load application status
+        async function loadStatus() {
+            try {
+                const response = await fetch('/');
+                const data = await response.json();
+                
+                document.getElementById('serverStatus').textContent = '🟢 Running';
+                document.getElementById('appVersion').textContent = data.version;
+                document.getElementById('environment').textContent = data.environment;
+                
+                // Load health data for uptime
+                const healthResponse = await fetch('/health');
+                const healthData = await healthResponse.json();
+                document.getElementById('uptime').textContent = `${Math.floor(healthData.uptime)}s`;
+            } catch (error) {
+                document.getElementById('serverStatus').textContent = '🔴 Error';
+                console.error('Error loading status:', error);
+            }
+        }
+        
+        // Load users
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                const users = await response.json();
+                
+                const usersList = document.getElementById('usersList');
+                if (users.length === 0) {
+                    usersList.innerHTML = '<div class="loading">No users found</div>';
+                    return;
+                }
+                
+                usersList.innerHTML = users.map(user => `
+                    <div class="user-item">
+                        <strong>${user.name}</strong> (${user.email})
+                    </div>
+                `).join('');
+            } catch (error) {
+                document.getElementById('usersList').innerHTML = '<div class="error">Error loading users</div>';
+                console.error('Error loading users:', error);
+            }
+        }
+        
+        // Add user
+        async function addUser(event) {
+            event.preventDefault();
+            
+            const formData = new FormData(event.target);
+            const userData = {
+                name: formData.get('name'),
+                email: formData.get('email')
+            };
+            
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                if (response.ok) {
+                    const newUser = await response.json();
+                    document.getElementById('message').innerHTML = `
+                        <div class="success">User "${newUser.name}" added successfully!</div>
+                    `;
+                    event.target.reset();
+                    loadUsers(); // Reload users list
+                } else {
+                    const error = await response.json();
+                    document.getElementById('message').innerHTML = `
+                        <div class="error">Error: ${error.error}</div>
+                    `;
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = `
+                    <div class="error">Error adding user: ${error.message}</div>
+                `;
+            }
+        }
+        
+        // Event listeners
+        document.getElementById('userForm').addEventListener('submit', addUser);
+        
+        // Load data on page load
+        loadStatus();
+        loadUsers();
+        
+        // Refresh status every 30 seconds
+        setInterval(loadStatus, 30000);
+    </script>
+</body>
+</html> 

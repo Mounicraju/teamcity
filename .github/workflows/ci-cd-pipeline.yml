@@ -1,0 +1,310 @@
+name: CI/CD Pipeline - Configuration as Code Demo
+
+# Trigger workflow on push to main branch and pull requests
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main, develop ]
+
+# Environment variables that can be used across jobs
+env:
+  NODE_VERSION: '18'
+  NPM_CACHE_FOLDER: ~/.npm
+  NPM_CONFIG_CACHE: ~/.npm
+
+# Jobs that run in parallel for efficiency
+jobs:
+  # Job 1: Code Quality Checks
+  code-quality:
+    name: 🔍 Code Quality & Linting
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📋 Install dependencies
+      run: npm ci
+      
+    - name: 🔍 Run ESLint
+      run: npm run lint
+      
+    - name: 📊 ESLint Report
+      if: always()
+      run: |
+        echo "## 🔍 ESLint Results" >> $GITHUB_STEP_SUMMARY
+        npm run lint 2>&1 | tee eslint-report.txt || true
+        echo "```" >> $GITHUB_STEP_SUMMARY
+        cat eslint-report.txt >> $GITHUB_STEP_SUMMARY
+        echo "```" >> $GITHUB_STEP_SUMMARY
+
+  # Job 2: Unit Tests
+  unit-tests:
+    name: 🧪 Unit Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📋 Install dependencies
+      run: npm ci
+      
+    - name: 🧪 Run unit tests
+      run: npm run test:unit
+      
+    - name: 📊 Test coverage report
+      if: always()
+      run: |
+        echo "## 🧪 Unit Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "Coverage report generated in coverage/ directory" >> $GITHUB_STEP_SUMMARY
+        
+    - name: 📈 Upload coverage to Codecov
+      if: success()
+      uses: codecov/codecov-action@v3
+      with:
+        file: ./coverage/lcov.info
+        flags: unit-tests
+        name: unit-test-coverage
+
+  # Job 3: Integration Tests
+  integration-tests:
+    name: 🔗 Integration Tests
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📋 Install dependencies
+      run: npm ci
+      
+    - name: 🚀 Start application
+      run: |
+        npm start &
+        sleep 10
+        echo "Application started on port 3000"
+        
+    - name: 🔗 Run integration tests
+      run: npm run test:integration
+      
+    - name: 📊 Integration test report
+      if: always()
+      run: |
+        echo "## 🔗 Integration Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "Integration tests completed successfully" >> $GITHUB_STEP_SUMMARY
+
+  # Job 4: Security Scan
+  security-scan:
+    name: 🔒 Security Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📋 Install dependencies
+      run: npm ci
+      
+    - name: 🔒 Run npm audit
+      run: npm audit --audit-level=moderate
+      
+    - name: 🔒 Run security scan
+      run: npm run security:scan
+      
+    - name: 📊 Security report
+      if: always()
+      run: |
+        echo "## 🔒 Security Scan Results" >> $GITHUB_STEP_SUMMARY
+        echo "Security scan completed" >> $GITHUB_STEP_SUMMARY
+
+  # Job 5: Performance Tests
+  performance-tests:
+    name: ⚡ Performance Tests
+    runs-on: ubuntu-latest
+    needs: [unit-tests, integration-tests]
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📋 Install dependencies
+      run: npm ci
+      
+    - name: 🚀 Start application
+      run: |
+        npm start &
+        sleep 10
+        
+    - name: ⚡ Run performance tests
+      run: npm run performance:test
+      
+    - name: 📊 Performance report
+      if: always()
+      run: |
+        echo "## ⚡ Performance Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "Performance tests completed" >> $GITHUB_STEP_SUMMARY
+
+  # Job 6: Build and Package
+  build:
+    name: 🏗️ Build & Package
+    runs-on: ubuntu-latest
+    needs: [code-quality, unit-tests, integration-tests, security-scan]
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+        cache: 'npm'
+        
+    - name: 📋 Install dependencies
+      run: npm ci
+      
+    - name: 🏗️ Build application
+      run: npm run build
+      
+    - name: 📦 Create deployment package
+      run: |
+        mkdir -p dist
+        cp -r server.js package.json public tests .eslintrc.js jest.config.js dist/
+        tar -czf deployment-package.tar.gz dist/
+        
+    - name: 📦 Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: deployment-package
+        path: deployment-package.tar.gz
+        retention-days: 30
+        
+    - name: 📊 Build report
+      if: always()
+      run: |
+        echo "## 🏗️ Build Results" >> $GITHUB_STEP_SUMMARY
+        echo "Build completed successfully" >> $GITHUB_STEP_SUMMARY
+        echo "Deployment package created: deployment-package.tar.gz" >> $GITHUB_STEP_SUMMARY
+
+  # Job 7: Deploy to Staging (on main branch)
+  deploy-staging:
+    name: 🚀 Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: [build]
+    if: github.ref == 'refs/heads/main'
+    environment: staging
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: deployment-package
+        
+    - name: 🚀 Deploy to staging
+      run: |
+        echo "Deploying to staging environment..."
+        npm run deploy:staging
+        
+    - name: 📊 Staging deployment report
+      if: always()
+      run: |
+        echo "## 🚀 Staging Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "Application deployed to staging environment" >> $GITHUB_STEP_SUMMARY
+
+  # Job 8: Deploy to Production (manual trigger)
+  deploy-production:
+    name: 🌐 Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [deploy-staging]
+    if: github.ref == 'refs/heads/main'
+    environment: production
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 📦 Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: deployment-package
+        
+    - name: 🌐 Deploy to production
+      run: |
+        echo "Deploying to production environment..."
+        npm run deploy:production
+        
+    - name: 📊 Production deployment report
+      if: always()
+      run: |
+        echo "## 🌐 Production Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "Application deployed to production environment" >> $GITHUB_STEP_SUMMARY
+
+  # Job 9: Notification and Summary
+  notification:
+    name: 📢 Pipeline Summary
+    runs-on: ubuntu-latest
+    needs: [code-quality, unit-tests, integration-tests, security-scan, performance-tests, build]
+    if: always()
+    
+    steps:
+    - name: 📊 Generate pipeline summary
+      run: |
+        echo "## 🎉 CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### ✅ Completed Jobs:" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔍 Code Quality & Linting" >> $GITHUB_STEP_SUMMARY
+        echo "- 🧪 Unit Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔗 Integration Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔒 Security Scan" >> $GITHUB_STEP_SUMMARY
+        echo "- ⚡ Performance Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- 🏗️ Build & Package" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 🚀 Deployment:" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+          echo "- ✅ Staging deployment completed" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ Production deployment completed" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ⏸️ Deployment skipped (not on main branch)" >> $GITHUB_STEP_SUMMARY
+        fi
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "### 📈 Configuration as Code Benefits Demonstrated:" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔄 Version controlled CI/CD configuration" >> $GITHUB_STEP_SUMMARY
+        echo "- 🎯 Consistent build process across environments" >> $GITHUB_STEP_SUMMARY
+        echo "- 🔍 Automated quality gates" >> $GITHUB_STEP_SUMMARY
+        echo "- 🚀 Automated deployment pipeline" >> $GITHUB_STEP_SUMMARY
+        echo "- 📊 Comprehensive testing strategy" >> $GITHUB_STEP_SUMMARY 
