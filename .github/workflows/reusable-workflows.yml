@@ -1,4 +1,4 @@
-name: 🔄 Reusable Workflow Components
+name: Reusable Workflow Components
 
 # This workflow demonstrates reusable components in GitHub Actions
 # It can be called from other workflows using the 'call' keyword
@@ -28,64 +28,64 @@ on:
 
 jobs:
   reusable-test:
-    name: 🧪 Reusable Test Suite
+    name: Reusable Test Suite
     runs-on: ubuntu-latest
     if: ${{ inputs.run-tests }}
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🧪 Run all tests
+    - name: Run all tests
       run: npm test
       
-    - name: 📊 Test summary
+    - name: Test summary
       if: always()
       run: |
-        echo "## 🧪 Test Results for ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
+        echo "## Test Results for ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
         echo "Environment: ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
         echo "Tests completed successfully" >> $GITHUB_STEP_SUMMARY
 
   reusable-deploy:
-    name: 🚀 Reusable Deployment
+    name: Reusable Deployment
     runs-on: ubuntu-latest
     needs: [reusable-test]
     if: ${{ inputs.deploy }}
     environment: ${{ inputs.environment }}
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🏗️ Build application
+    - name: Build application
       run: npm run build
       
-    - name: 🚀 Deploy to ${{ inputs.environment }}
+    - name: Deploy to ${{ inputs.environment }}
       run: |
         echo "Deploying to ${{ inputs.environment }} environment..."
         npm run deploy:${{ inputs.environment }}
         
-    - name: 📊 Deployment summary
+    - name: Deployment summary
       if: always()
       run: |
-        echo "## 🚀 Deployment Results" >> $GITHUB_STEP_SUMMARY
+        echo "## Deployment Results" >> $GITHUB_STEP_SUMMARY
         echo "Environment: ${{ inputs.environment }}" >> $GITHUB_STEP_SUMMARY
         echo "Deployment completed successfully" >> $GITHUB_STEP_SUMMARY 

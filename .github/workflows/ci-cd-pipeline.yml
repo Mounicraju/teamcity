@@ -18,61 +18,61 @@ env:
 jobs:
   # Job 1: Code Quality Checks
   code-quality:
-    name: 🔍 Code Quality & Linting
+    name: Code Quality & Linting
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🔍 Run ESLint
+    - name: Run ESLint
       run: npm run lint
       
-    - name: 📊 ESLint Report
+    - name: ESLint Report
       if: always()
       run: |
-        echo "## 🔍 ESLint Results" >> $GITHUB_STEP_SUMMARY
+        echo "## ESLint Results" >> $GITHUB_STEP_SUMMARY
         echo "ESLint checks completed successfully" >> $GITHUB_STEP_SUMMARY
         echo "No linting errors found" >> $GITHUB_STEP_SUMMARY
 
   # Job 2: Unit Tests
   unit-tests:
-    name: 🧪 Unit Tests
+    name: Unit Tests
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🧪 Run unit tests
+    - name: Run unit tests
       run: npm run test:unit
       
-    - name: 📊 Test coverage report
+    - name: Test coverage report
       if: always()
       run: |
-        echo "## 🧪 Unit Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "## Unit Test Results" >> $GITHUB_STEP_SUMMARY
         echo "Unit tests completed successfully" >> $GITHUB_STEP_SUMMARY
         echo "Coverage report generated in coverage/ directory" >> $GITHUB_STEP_SUMMARY
         
-    - name: 📈 Upload coverage to Codecov
+    - name: Upload coverage to Codecov
       if: success()
       uses: codecov/codecov-action@v3
       with:
@@ -82,252 +82,252 @@ jobs:
 
   # Job 3: Integration Tests
   integration-tests:
-    name: 🔗 Integration Tests
+    name: Integration Tests
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🔗 Run integration tests
+    - name: Run integration tests
       run: npm run test:integration
       
-    - name: 📊 Integration test report
+    - name: Integration test report
       if: always()
       run: |
-        echo "## 🔗 Integration Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "## Integration Test Results" >> $GITHUB_STEP_SUMMARY
         echo "Integration tests completed successfully" >> $GITHUB_STEP_SUMMARY
 
   # Job 4: Security Scan
   security-scan:
-    name: 🔒 Security Scan
+    name: Security Scan
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🔒 Run npm audit
+    - name: Run npm audit
       run: npm audit --audit-level=moderate
       
-    - name: 🔒 Run security scan
+    - name: Run security scan
       run: npm run security:scan
       
-    - name: 📊 Security report
+    - name: Security report
       if: always()
       run: |
-        echo "## 🔒 Security Scan Results" >> $GITHUB_STEP_SUMMARY
+        echo "## Security Scan Results" >> $GITHUB_STEP_SUMMARY
         echo "Security scan completed successfully" >> $GITHUB_STEP_SUMMARY
 
   # Job 5: Performance Tests
   performance-tests:
-    name: ⚡ Performance Tests
+    name: Performance Tests
     runs-on: ubuntu-latest
     needs: [unit-tests, integration-tests]
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: ⚡ Run performance tests
+    - name: Run performance tests
       run: npm run performance:test
       
-    - name: 📊 Performance report
+    - name: Performance report
       if: always()
       run: |
-        echo "## ⚡ Performance Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "## Performance Test Results" >> $GITHUB_STEP_SUMMARY
         echo "Performance tests completed successfully" >> $GITHUB_STEP_SUMMARY
 
   # Job 6: Build and Package
   build:
-    name: 🏗️ Build & Package
+    name: Build & Package
     runs-on: ubuntu-latest
     needs: [code-quality, unit-tests, integration-tests, security-scan]
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🏗️ Build application
+    - name: Build application
       run: npm run build
       
-    - name: 📦 Create deployment package
+    - name: Create deployment package
       run: |
         mkdir -p dist
         cp -r server.js package.json public tests .eslintrc.js jest.config.js dist/
         tar -czf deployment-package.tar.gz dist/
         
-    - name: 📦 Upload build artifacts
+    - name: Upload build artifacts
       uses: actions/upload-artifact@v4
       with:
         name: deployment-package
         path: deployment-package.tar.gz
         
-    - name: 📊 Build report
+    - name: Build report
       if: always()
       run: |
-        echo "## 🏗️ Build Results" >> $GITHUB_STEP_SUMMARY
+        echo "## Build Results" >> $GITHUB_STEP_SUMMARY
         echo "Build completed successfully" >> $GITHUB_STEP_SUMMARY
         echo "Deployment package created: deployment-package.tar.gz" >> $GITHUB_STEP_SUMMARY
 
   # Job 7: Deploy to Staging
   deploy-staging:
-    name: 🚀 Deploy to Staging
+    name: Deploy to Staging
     runs-on: ubuntu-latest
     needs: [build]
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Download build artifacts
+    - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
         name: deployment-package
         
-    - name: 🚀 Deploy to staging
+    - name: Deploy to staging
       run: |
         echo "Deploying to staging environment..."
-        echo "✅ Staging deployment successful"
+        echo "Staging deployment successful"
         echo "Staging URL: https://staging-demo.example.com"
         
-    - name: 📊 Staging deployment report
+    - name: Staging deployment report
       if: always()
       run: |
-        echo "## 🚀 Staging Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "## Staging Deployment" >> $GITHUB_STEP_SUMMARY
         echo "Application deployed to staging environment" >> $GITHUB_STEP_SUMMARY
 
   # Job 8: Deploy to Netlify
   deploy-netlify:
-    name: 🌐 Deploy to Netlify
+    name: Deploy to Netlify
     runs-on: ubuntu-latest
     needs: [build]
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🏗️ Build for Netlify
+    - name: Build for Netlify
       run: npm run build:netlify
       
-    - name: 🌐 Deploy to Netlify
+    - name: Deploy to Netlify
       run: |
         echo "Deploying to Netlify..."
         echo "Site ID: 492d1086-0844-46ed-9b2c-b61b7d1cf513"
         echo "Site URL: https://demoforteamcity.netlify.app"
-        echo "✅ Netlify deployment successful"
+        echo "Netlify deployment successful"
         
-    - name: 📊 Netlify deployment report
+    - name: Netlify deployment report
       if: always()
       run: |
-        echo "## 🌐 Netlify Deployment" >> $GITHUB_STEP_SUMMARY
-        echo "Application deployed to Netlify successfully! 🎉" >> $GITHUB_STEP_SUMMARY
+        echo "## Netlify Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "Application deployed to Netlify successfully!" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 📋 Deployment Details:" >> $GITHUB_STEP_SUMMARY
+        echo "### Deployment Details:" >> $GITHUB_STEP_SUMMARY
         echo "- **Site URL**: https://demoforteamcity.netlify.app" >> $GITHUB_STEP_SUMMARY
         echo "- **Site ID**: 492d1086-0844-46ed-9b2c-b61b7d1cf513" >> $GITHUB_STEP_SUMMARY
         echo "- **Branch**: main" >> $GITHUB_STEP_SUMMARY
 
   # Job 9: Deploy to Production
   deploy-production:
-    name: 🚀 Deploy to Production
+    name: Deploy to Production
     runs-on: ubuntu-latest
     needs: [deploy-staging, deploy-netlify]
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Download build artifacts
+    - name: Download build artifacts
       uses: actions/download-artifact@v4
       with:
         name: deployment-package
         
-    - name: 🌐 Deploy to production
+    - name: Deploy to production
       run: |
         echo "Deploying to production environment..."
-        echo "✅ Production deployment successful"
+        echo "Production deployment successful"
         echo "Production URL: https://production-demo.example.com"
         
-    - name: 📊 Production deployment report
+    - name: Production deployment report
       if: always()
       run: |
-        echo "## 🌐 Production Deployment" >> $GITHUB_STEP_SUMMARY
+        echo "## Production Deployment" >> $GITHUB_STEP_SUMMARY
         echo "Application deployed to production environment" >> $GITHUB_STEP_SUMMARY
 
   # Job 10: Pipeline Summary
   pipeline-summary:
-    name: 📢 Pipeline Summary
+    name: Pipeline Summary
     runs-on: ubuntu-latest
     needs: [code-quality, unit-tests, integration-tests, security-scan, performance-tests, build]
     
     steps:
-    - name: 📊 Generate pipeline summary
+    - name: Generate pipeline summary
       run: |
-        echo "## 🎉 CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
+        echo "## CI/CD Pipeline Summary" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### ✅ Completed Jobs:" >> $GITHUB_STEP_SUMMARY
-        echo "- 🔍 Code Quality & Linting" >> $GITHUB_STEP_SUMMARY
-        echo "- 🧪 Unit Tests" >> $GITHUB_STEP_SUMMARY
-        echo "- 🔗 Integration Tests" >> $GITHUB_STEP_SUMMARY
-        echo "- 🔒 Security Scan" >> $GITHUB_STEP_SUMMARY
-        echo "- ⚡ Performance Tests" >> $GITHUB_STEP_SUMMARY
-        echo "- 🏗️ Build & Package" >> $GITHUB_STEP_SUMMARY
+        echo "### Completed Jobs:" >> $GITHUB_STEP_SUMMARY
+        echo "- Code Quality & Linting" >> $GITHUB_STEP_SUMMARY
+        echo "- Unit Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- Integration Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- Security Scan" >> $GITHUB_STEP_SUMMARY
+        echo "- Performance Tests" >> $GITHUB_STEP_SUMMARY
+        echo "- Build & Package" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 🚀 Deployment:" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Staging deployment completed" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Netlify deployment completed" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Production deployment completed" >> $GITHUB_STEP_SUMMARY
+        echo "### Deployment:" >> $GITHUB_STEP_SUMMARY
+        echo "- Staging deployment completed" >> $GITHUB_STEP_SUMMARY
+        echo "- Netlify deployment completed" >> $GITHUB_STEP_SUMMARY
+        echo "- Production deployment completed" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### 📈 Configuration as Code Benefits Demonstrated:" >> $GITHUB_STEP_SUMMARY
-        echo "- 🔄 Version controlled CI/CD configuration" >> $GITHUB_STEP_SUMMARY
-        echo "- 🎯 Consistent build process across environments" >> $GITHUB_STEP_SUMMARY
-        echo "- 🔍 Automated quality gates" >> $GITHUB_STEP_SUMMARY
-        echo "- 🚀 Automated deployment pipeline" >> $GITHUB_STEP_SUMMARY
-        echo "- 📊 Comprehensive testing strategy" >> $GITHUB_STEP_SUMMARY
-        echo "- 🌐 Multi-platform deployment (Staging, Netlify, Production)" >> $GITHUB_STEP_SUMMARY 
+        echo "### Configuration as Code Benefits Demonstrated:" >> $GITHUB_STEP_SUMMARY
+        echo "- Version controlled CI/CD configuration" >> $GITHUB_STEP_SUMMARY
+        echo "- Consistent build process across environments" >> $GITHUB_STEP_SUMMARY
+        echo "- Automated quality gates" >> $GITHUB_STEP_SUMMARY
+        echo "- Automated deployment pipeline" >> $GITHUB_STEP_SUMMARY
+        echo "- Comprehensive testing strategy" >> $GITHUB_STEP_SUMMARY
+        echo "- Multi-platform deployment (Staging, Netlify, Production)" >> $GITHUB_STEP_SUMMARY 

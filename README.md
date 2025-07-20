@@ -1,8 +1,8 @@
-# 🚀 Configuration as Code Demo
+# Configuration as Code Demo
 
-A comprehensive demonstration of **Configuration as Code (CaC)** capabilities using GitHub Actions and TeamCity for CI/CD pipelines.
+A comprehensive demonstration of **Configuration as Code (CaC)** capabilities using GitHub Actions for CI/CD pipelines.
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ├── .github/workflows/          # GitHub Actions configurations
@@ -15,43 +15,43 @@ A comprehensive demonstration of **Configuration as Code (CaC)** capabilities us
 └── .gitignore                  # Git ignore rules
 ```
 
-## ✅ Configuration as Code Benefits
+## Configuration as Code Benefits
 
-### 🔄 **Version Control & History**
+### **Version Control & History**
 - Track pipeline changes in git history
 - Easy rollback to previous configurations
 - Complete audit trail of modifications
 
-### 🎯 **Consistency & Standardization**
+### **Consistency & Standardization**
 - Same pipeline across all environments
 - Reduced manual configuration errors
 - Enforced best practices
 
-### 🚀 **Automation & Efficiency**
+### **Automation & Efficiency**
 - Automated setup for new projects
 - Faster team onboarding
 - Centralized configuration management
 
-## 🏗️ CI/CD Pipeline Features
+## CI/CD Pipeline Features
 
 ### **10 Comprehensive Build Jobs:**
-1. **📦 Install Dependencies** - npm ci installation
-2. **🔍 Code Quality & Linting** - ESLint analysis
-3. **🧪 Unit Tests** - Jest testing with coverage
-4. **🔗 Integration Tests** - End-to-end testing
-5. **🔒 Security Scan** - Vulnerability analysis
-6. **⚡ Performance Tests** - Application benchmarking
-7. **🏗️ Build & Package** - Application compilation
-8. **🚀 Deploy to Staging** - Automated staging deployment
-9. **🌐 Deploy to Netlify** - Cloud deployment
-10. **📢 Pipeline Summary** - Comprehensive reporting
+1. **Install Dependencies** - npm ci installation
+2. **Code Quality & Linting** - ESLint analysis
+3. **Unit Tests** - Jest testing with coverage
+4. **Integration Tests** - End-to-end testing
+5. **Security Scan** - Vulnerability analysis
+6. **Performance Tests** - Application benchmarking
+7. **Build & Package** - Application compilation
+8. **Deploy to Staging** - Automated staging deployment
+9. **Deploy to Netlify** - Cloud deployment
+10. **Pipeline Summary** - Comprehensive reporting
 
 ### **Multi-Platform Deployment:**
 - **Staging Environment** - For testing
 - **Netlify** - Cloud hosting with serverless functions
 - **Production** - Final deployment (via GitHub Actions)
 
-## 🎨 Web Application
+## Web Application
 
 ### **Features:**
 - **Express.js Backend** - RESTful API with user management
@@ -65,7 +65,7 @@ A comprehensive demonstration of **Configuration as Code (CaC)** capabilities us
 - `GET /api/users` - List users
 - `POST /api/users` - Create user
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # Install dependencies
@@ -83,7 +83,7 @@ npm start
 # Health: http://localhost:3000/health
 ```
 
-## 🔄 GitHub Actions Workflow
+## GitHub Actions Workflow
 
 ### **Triggers:**
 - Push to `main` or `develop` branches
@@ -95,7 +95,7 @@ npm start
 2. **Sequential Jobs**: Build → Deploy staging → Deploy Netlify → Deploy production
 3. **Quality Gates**: Each job must pass before proceeding
 
-## 🏢 CI/CD Pipeline Features
+## CI/CD Pipeline Features
 
 ### **Visual Pipeline Representation:**
 GitHub Actions provides a comprehensive dashboard showing:
@@ -111,7 +111,7 @@ All 10 build steps are visible in GitHub Actions UI with:
 - **Status tracking** (success/failed/running)
 - **Artifact management**
 
-## 🌐 Netlify Deployment
+## Netlify Deployment
 
 ### **Automatic Deployment:**
 - Triggered by successful GitHub Actions builds
@@ -124,7 +124,7 @@ All 10 build steps are visible in GitHub Actions UI with:
 - `netlify/functions/api.js` - Serverless API
 - Environment variables for production settings
 
-## 📊 Success Metrics
+## Success Metrics
 
 - **✅ All Tests Passing**: 13/13 tests
 - **✅ Code Quality**: ESLint clean
@@ -133,7 +133,7 @@ All 10 build steps are visible in GitHub Actions UI with:
 - **✅ Deployment**: Multi-platform automation
 - **✅ TeamCity Integration**: Visual pipeline monitoring
 
-## 🔗 Live URLs
+## Live URLs
 
 - **Netlify Site**: https://demoforteamcity.netlify.app
 - **GitHub Actions**: https://github.com/Mounicraju/teamcity/actions

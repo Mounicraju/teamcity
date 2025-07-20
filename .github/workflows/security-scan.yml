@@ -1,4 +1,4 @@
-name: 🔒 Security Analysis Workflow
+name: Security Analysis Workflow
 
 # Trigger on schedule and manual workflow dispatch
 on:
@@ -19,48 +19,48 @@ on:
 
 jobs:
   security-analysis:
-    name: 🔒 Comprehensive Security Analysis
+    name: Comprehensive Security Analysis
     runs-on: ubuntu-latest
     
     steps:
-    - name: 📥 Checkout code
+    - name: Checkout code
       uses: actions/checkout@v4
       
-    - name: 📦 Setup Node.js
+    - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '18'
         cache: 'npm'
         
-    - name: 📋 Install dependencies
+    - name: Install dependencies
       run: npm ci
       
-    - name: 🔍 Dependency vulnerability scan
+    - name: Dependency vulnerability scan
       if: github.event.inputs.scan_type == 'dependencies' || github.event.inputs.scan_type == 'full'
       run: |
-        echo "## 🔍 Dependency Vulnerability Scan" >> $GITHUB_STEP_SUMMARY
+        echo "## Dependency Vulnerability Scan" >> $GITHUB_STEP_SUMMARY
         npm audit --audit-level=moderate --json > audit-report.json || true
         echo "Dependency scan completed" >> $GITHUB_STEP_SUMMARY
         
-    - name: 🔍 Code security analysis
+    - name: Code security analysis
       if: github.event.inputs.scan_type == 'code' || github.event.inputs.scan_type == 'full'
       run: |
-        echo "## 🔍 Code Security Analysis" >> $GITHUB_STEP_SUMMARY
+        echo "## Code Security Analysis" >> $GITHUB_STEP_SUMMARY
         echo "Running code security analysis..." >> $GITHUB_STEP_SUMMARY
         # This would typically use tools like SonarQube, CodeQL, or similar
         echo "Code security analysis completed" >> $GITHUB_STEP_SUMMARY
         
-    - name: 📊 Security report generation
+    - name: Security report generation
       if: always()
       run: |
-        echo "## 🔒 Security Analysis Summary" >> $GITHUB_STEP_SUMMARY
+        echo "## Security Analysis Summary" >> $GITHUB_STEP_SUMMARY
         echo "Scan type: ${{ github.event.inputs.scan_type || 'full' }}" >> $GITHUB_STEP_SUMMARY
         echo "Scan completed at: $(date)" >> $GITHUB_STEP_SUMMARY
         echo "Repository: ${{ github.repository }}" >> $GITHUB_STEP_SUMMARY
         echo "Branch: ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
         
-    - name: 📧 Security notification
+    - name: Security notification
       if: failure()
       run: |
-        echo "## ⚠️ Security Issues Detected" >> $GITHUB_STEP_SUMMARY
+        echo "## Security Issues Detected" >> $GITHUB_STEP_SUMMARY
         echo "Please review the security scan results and address any issues found." >> $GITHUB_STEP_SUMMARY 
