@@ -139,7 +139,10 @@ if (process.env.NODE_ENV !== 'test') {
 
 // Error handling middleware
 app.use((err, req, res, _next) => {
-  console.error(err.stack);
+  // Only log errors in non-test environments to reduce test noise
+  if (process.env.NODE_ENV !== 'test') {
+    console.error(err.stack);
+  }
   
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({ error: 'Invalid JSON format' });

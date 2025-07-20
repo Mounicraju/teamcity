@@ -12,7 +12,7 @@ A comprehensive demonstration of **Configuration as Code (CaC)** capabilities us
 ├── netlify/                    # Netlify deployment configuration
 ├── server.js                   # Express.js web server
 ├── package.json                # Dependencies and scripts
-└── teamcity-config.yml         # TeamCity configuration
+└── .gitignore                  # Git ignore rules
 ```
 
 ## ✅ Configuration as Code Benefits
@@ -49,7 +49,7 @@ A comprehensive demonstration of **Configuration as Code (CaC)** capabilities us
 ### **Multi-Platform Deployment:**
 - **Staging Environment** - For testing
 - **Netlify** - Cloud hosting with serverless functions
-- **Production** - Final deployment
+- **Production** - Final deployment (via GitHub Actions)
 
 ## 🎨 Web Application
 
@@ -95,17 +95,17 @@ npm start
 2. **Sequential Jobs**: Build → Deploy staging → Deploy Netlify → Deploy production
 3. **Quality Gates**: Each job must pass before proceeding
 
-## 🏢 TeamCity Integration
+## 🏢 CI/CD Pipeline Features
 
 ### **Visual Pipeline Representation:**
-TeamCity provides a beautiful visual dashboard showing:
+GitHub Actions provides a comprehensive dashboard showing:
 - **Real-time build status** for each step
 - **Dependency relationships** with arrows
 - **Live progress indicators**
 - **Professional UI** for demo presentations
 
 ### **Build Configurations:**
-All 10 build steps are visible in TeamCity UI with:
+All 10 build steps are visible in GitHub Actions UI with:
 - **Clear step names** and descriptions
 - **Execution logs** and outputs
 - **Status tracking** (success/failed/running)
@@ -137,4 +137,3 @@ All 10 build steps are visible in TeamCity UI with:
 
 - **Netlify Site**: https://demoforteamcity.netlify.app
 - **GitHub Actions**: https://github.com/Mounicraju/teamcity/actions
-- **TeamCity Dashboard**: http://localhost:8111

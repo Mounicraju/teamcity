@@ -16,12 +16,8 @@
     "build:static": "mkdir -p dist && cp -r public/* dist/",
     "security:scan": "npm audit --audit-level=moderate",
     "performance:test": "echo \"Performance tests completed successfully\"",
-    "ci:install": "npm ci",
-    "ci:test": "npm run test",
-    "ci:lint": "npm run lint",
-    "ci:security": "npm run security:scan",
-    "ci:build": "npm run build",
-    "ci:deploy": "echo \"Deployment completed successfully\""
+    "clean": "rm -rf coverage dist .eslintcache",
+    "prebuild": "npm run clean"
   },
   "keywords": ["github-actions", "cicd", "configuration-as-code", "demo", "webapp", "netlify", "teamcity"],
   "author": "Demo User",
