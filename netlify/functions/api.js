@@ -3,10 +3,10 @@ const serverless = require('serverless-http');
 
 const app = express();
 
-// Middleware
+// Set up the middleware we need
 app.use(express.json());
 
-// API Routes
+// Define our API endpoints
 app.get('/api', (req, res) => {
   res.json({
     message: 'Welcome to GitHub Actions Configuration as Code Demo!',
@@ -29,7 +29,7 @@ app.get('/api/health', (req, res) => {
 });
 
 app.get('/api/users', (req, res) => {
-  // Mock user data for demo
+  // Just some fake users for the demo
   const users = [
     { id: 1, name: 'John Doe', email: 'john@example.com' },
     { id: 2, name: 'Jane Smith', email: 'jane@example.com' },
@@ -44,7 +44,7 @@ app.post('/api/users', (req, res) => {
     return res.status(400).json({ error: 'Name and email are required' });
   }
   
-  // Mock user creation
+  // Create a fake user (in real life this would go to a database)
   const newUser = {
     id: Math.floor(Math.random() * 1000) + 4,
     name,
@@ -54,7 +54,7 @@ app.post('/api/users', (req, res) => {
   res.status(201).json(newUser);
 });
 
-// Health endpoint (for backward compatibility)
+// Keep the old health endpoint around for compatibility
 app.get('/health', (req, res) => {
   res.json({
     status: 'healthy',
@@ -65,11 +65,11 @@ app.get('/health', (req, res) => {
   });
 });
 
-// Error handling middleware
+// Catch any errors that slip through
 app.use((err, req, res, _next) => {
   console.error(err.stack);
   
-  // Handle JSON parsing errors
+  // Handle JSON parsing errors specifically
   if (err instanceof SyntaxError && err.status === 400 && 'body' in err) {
     return res.status(400).json({ error: 'Invalid JSON format' });
   }
@@ -77,10 +77,10 @@ app.use((err, req, res, _next) => {
   res.status(500).json({ error: 'Something went wrong!' });
 });
 
-// 404 handler
+// If nothing else matches, return 404
 app.use((req, res) => {
   res.status(404).json({ error: 'Route not found' });
 });
 
-// Export the serverless function
+// Export the function for Netlify
 module.exports.handler = serverless(app); 

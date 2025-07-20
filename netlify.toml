@@ -1,27 +1,27 @@
 [build]
-  # Build command for Netlify
+  # What to run when building the site
   command = "npm run build:netlify"
   
-  # Publish directory (where the built files will be)
+  # Where to find the files to serve
   publish = "dist"
   
-  # Functions directory for serverless functions
+  # Where our serverless functions live
   functions = "netlify/functions"
 
 [build.environment]
-  # Node.js version
+  # Use Node.js 18
   NODE_VERSION = "18"
   
-  # Environment variables
+  # Set up the environment
   NODE_ENV = "production"
   SITE_NAME = "demoforteamcity"
 
-# Site configuration
+# Production environment settings
 [context.production.environment]
   SITE_NAME = "demoforteamcity"
   SITE_ID = "492d1086-0844-46ed-9b2c-b61b7d1cf513"
 
-# Redirects for SPA and API
+# Set up redirects for the single-page app and API
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
@@ -32,7 +32,7 @@
   to = "/index.html"
   status = 200
 
-# Headers for security and performance
+# Add some security headers
 [[headers]]
   for = "/*"
   [headers.values]

@@ -1,14 +1,15 @@
 const request = require('supertest');
 const app = require('../../server');
 
+// Test the app as a whole, making sure everything works together
 describe('Application Integration Tests', () => {
   describe('Full User Workflow', () => {
     it('should handle complete user management workflow', async () => {
-      // Step 1: Check initial users
+      // First, let's see what users we have
       const initialUsersResponse = await request(app).get('/api/users');
       expect(initialUsersResponse.status).toBe(200);
       
-      // Step 2: Create a new user
+      // Now let's create a new user
       const newUser = {
         name: 'Integration Test User',
         email: 'integration@test.com'
@@ -23,8 +24,8 @@ describe('Application Integration Tests', () => {
       expect(createResponse.body.name).toBe(newUser.name);
       expect(createResponse.body.email).toBe(newUser.email);
       
-      // Step 3: Verify user was added (note: our mock API doesn't actually persist data)
-      // So we just verify the creation was successful
+      // Since this is just a demo with fake data, we can't actually verify the user was added
+      // But we can make sure the creation process worked
       expect(createResponse.body).toHaveProperty('id');
       expect(createResponse.body.id).toBeGreaterThan(0);
     });
@@ -32,23 +33,23 @@ describe('Application Integration Tests', () => {
 
   describe('Application Health and Status', () => {
     it('should provide consistent health and status information', async () => {
-      // Check main endpoint
+      // Check the main endpoint
       const mainResponse = await request(app).get('/');
       expect(mainResponse.status).toBe(200);
       expect(mainResponse.body).toHaveProperty('message');
       expect(mainResponse.body).toHaveProperty('timestamp');
       
-      // Check health endpoint
+      // Check the health endpoint
       const healthResponse = await request(app).get('/health');
       expect(healthResponse.status).toBe(200);
       expect(healthResponse.body.status).toBe('healthy');
       expect(healthResponse.body).toHaveProperty('timestamp');
       
-      // Verify timestamps are valid ISO strings
+      // Make sure the timestamps are actually valid dates
       expect(() => new Date(mainResponse.body.timestamp)).not.toThrow();
       expect(() => new Date(healthResponse.body.timestamp)).not.toThrow();
       
-      // Verify timestamps are recent (within last minute)
+      // And that they're reasonably recent (within the last minute)
       const now = new Date();
       const mainTimestamp = new Date(mainResponse.body.timestamp);
       const healthTimestamp = new Date(healthResponse.body.timestamp);
@@ -60,7 +61,7 @@ describe('Application Integration Tests', () => {
 
   describe('Error Handling', () => {
     it('should handle malformed requests gracefully', async () => {
-      // Test with invalid JSON
+      // Try sending some garbage JSON and see if the server handles it properly
       const response = await request(app)
         .post('/api/users')
         .send('invalid json')
@@ -75,7 +76,7 @@ describe('Application Integration Tests', () => {
         .post('/api/users')
         .send({ name: 'Test', email: 'test@example.com' });
       
-      // Express should still process this correctly
+      // Express should be smart enough to figure this out
       expect(response.status).toBe(201);
     });
   });

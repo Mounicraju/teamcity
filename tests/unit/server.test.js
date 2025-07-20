@@ -1,6 +1,7 @@
 const request = require('supertest');
 const app = require('../../server');
 
+// Test the main server functionality
 describe('Server Unit Tests', () => {
   describe('GET /', () => {
     it('should return welcome message and app info', async () => {
@@ -36,6 +37,7 @@ describe('Server Unit Tests', () => {
       expect(Array.isArray(response.body)).toBe(true);
       expect(response.body.length).toBeGreaterThan(0);
       
+      // Check that the first user has the expected properties
       const user = response.body[0];
       expect(user).toHaveProperty('id');
       expect(user).toHaveProperty('name');

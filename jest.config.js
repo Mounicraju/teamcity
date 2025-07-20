@@ -16,10 +16,10 @@ module.exports = {
   testEnvironmentOptions: {
     NODE_ENV: 'test'
   },
-  // Prevent Jest from running tests in parallel to avoid port conflicts
+  // Run tests one at a time to avoid port conflicts
   maxWorkers: 1,
-  // Force exit after tests complete
+  // Make sure Jest exits when done
   forceExit: true,
-  // Detect open handles
+  // Check for any hanging connections
   detectOpenHandles: true
 }; 
